@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMU Cosmetics</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 50%, #f48fb1 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(135deg, #880e4f, #c2185b, #e91e63);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(136,14,79,0.4);
+        }
+
+        .logo { display: flex; align-items: center; gap: 15px; }
+        .logo-icon {
+            width: 50px; height: 50px; background: white;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-size: 24px;
+        }
+        .logo h1 { font-size: 2rem; letter-spacing: 3px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .logo p  { font-size: 0.8rem; letter-spacing: 2px; opacity: 0.9; }
+
+        .admin-btn {
+            background: rgba(255,255,255,0.2); color: white;
+            border: 2px solid rgba(255,255,255,0.5); padding: 10px 20px;
+            border-radius: 25px; cursor: pointer; font-size: 0.9rem;
+            letter-spacing: 1px; transition: all 0.3s;
+        }
+        .admin-btn:hover { background: white; color: #880e4f; }
+
+        /* ── Loading Screen ── */
+        #loadingScreen {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: linear-gradient(135deg,#fce4ec,#f8bbd0,#f48fb1);
+            z-index: 9999; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 20px;
+        }
+        .loading-logo { font-size: 4rem; animation: pulse 1.2s infinite; }
+        @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.15);} }
+        .loading-text { color: #880e4f; font-size: 1.3rem; font-weight: bold; letter-spacing: 2px; }
+        .loading-sub  { color: #c2185b; font-size: 0.9rem; }
+        .loading-bar-track {
+            width: 200px; height: 6px; background: rgba(136,14,79,0.2);
+            border-radius: 3px; overflow: hidden;
+        }
+        .loading-bar-fill {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg,#880e4f,#e91e63);
+            border-radius: 3px; transition: width 0.4s;
+        }
+
+        .hero {
+            text-align: center; padding: 60px 40px;
+            background: linear-gradient(180deg,rgba(255,255,255,0.3) 0%,transparent 100%);
+        }
+        .hero h2 { font-size: 2.5rem; color: #880e4f; margin-bottom: 15px; text-shadow: 1px 1px 3px rgba(0,0,0,0.1); }
+        .hero p   { font-size: 1.1rem; color: #555; max-width: 600px; margin: 0 auto; line-height: 1.8; }
+
+        .products-section { padding: 40px; max-width: 1200px; margin: 0 auto; }
+
+        .section-title { text-align: center; font-size: 1.8rem; color: #880e4f; margin-bottom: 40px; position: relative; }
+        .section-title::after {
+            content:''; display:block; width:80px; height:3px;
+            background: linear-gradient(135deg,#e91e63,#f48fb1);
+            margin: 10px auto 0; border-radius: 2px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background: white; border-radius: 20px; overflow: hidden;
+            box-shadow: 0 8px 30px rgba(136,14,79,0.15);
+            transition: transform 0.3s, box-shadow 0.3s; position: relative;
+        }
+        .product-card:hover { transform: translateY(-8px); box-shadow: 0 15px 40px rgba(136,14,79,0.25); }
+
+        .discount-badge {
+            position: absolute; top:12px; left:12px;
+            background: linear-gradient(135deg,#e91e63,#880e4f);
+            color:white; font-size:0.75rem; font-weight:bold;
+            padding:4px 10px; border-radius:20px; z-index:10; letter-spacing:0.5px;
+        }
+        .out-of-stock-badge {
+            position: absolute; top:12px; right:12px;
+            background: rgba(0,0,0,0.7); color:white;
+            font-size:0.7rem; padding:4px 10px; border-radius:20px; z-index:10;
+        }
+
+        .product-image-wrapper { position:relative; height:220px; cursor:pointer; overflow:hidden; }
+        .product-image-wrapper img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
+        .product-image-wrapper:hover img { transform: scale(1.05); }
+
+        .product-emoji-placeholder {
+            width:100%; height:100%; display:flex; align-items:center;
+            justify-content:center; font-size:5rem;
+            background: linear-gradient(135deg,#fce4ec,#f8bbd0); transition:transform 0.4s;
+        }
+        .product-image-wrapper:hover .product-emoji-placeholder { transform: scale(1.05); }
+
+        .click-hint {
+            position:absolute; bottom:10px; right:10px;
+            background: rgba(136,14,79,0.85); color:white;
+            font-size:0.7rem; padding:4px 10px; border-radius:20px;
+            letter-spacing:0.5px; pointer-events:none;
+        }
+
+        .product-info { padding: 20px; }
+        .product-name { font-size:1.1rem; font-weight:bold; color:#333; margin-bottom:6px; }
+        .product-description { font-size:0.85rem; color:#777; margin-bottom:12px; line-height:1.5; }
+        .product-price { font-size:1.3rem; font-weight:bold; color:#e91e63; margin-bottom:4px; }
+        .product-price-original { font-size:0.9rem; color:#aaa; text-decoration:line-through; margin-bottom:8px; }
+
+        .stock-bar-wrapper { margin-bottom:12px; }
+        .stock-bar-label { font-size:0.75rem; color:#888; margin-bottom:4px; display:flex; justify-content:space-between; }
+        .stock-bar-track { height:6px; background:#f0f0f0; border-radius:3px; overflow:hidden; }
+        .stock-bar-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,#e91e63,#f48fb1); transition:width 0.4s; }
+        .stock-bar-fill.low    { background: linear-gradient(90deg,#f44336,#ff7043); }
+        .stock-bar-fill.medium { background: linear-gradient(90deg,#ff9800,#ffc107); }
+        .stock-bar-fill.high   { background: linear-gradient(90deg,#4caf50,#81c784); }
+
+        .order-info {
+            display:none; background:linear-gradient(135deg,#fce4ec,#f8bbd0);
+            border:2px solid #e91e63; border-radius:12px; padding:14px;
+            margin-top:10px; animation: slideDown 0.3s ease;
+        }
+        .order-info.visible { display:block; }
+        @keyframes slideDown { from{opacity:0;transform:translateY(-10px);} to{opacity:1;transform:translateY(0);} }
+        .order-info p { font-size:0.85rem; color:#880e4f; font-weight:bold; margin-bottom:6px; }
+        .order-info .owner-name { font-size:1rem; color:#333; font-weight:bold; margin-bottom:8px; }
+
+        .whatsapp-link {
+            display:inline-flex; align-items:center; gap:8px;
+            background:#25d366; color:white; text-decoration:none;
+            padding:8px 16px; border-radius:20px; font-size:0.85rem;
+            font-weight:bold; transition:background 0.3s, transform 0.2s;
+        }
+        .whatsapp-link:hover { background:#128c7e; transform:scale(1.03); }
+
+        /* Floating WhatsApp */
+        .whatsapp-float {
+            position:fixed; bottom:30px; right:30px; z-index:998;
+            display:flex; flex-direction:column; align-items:flex-end; gap:8px;
+        }
+        .whatsapp-float-label {
+            background:white; color:#128c7e; font-size:0.8rem; font-weight:bold;
+            padding:6px 12px; border-radius:20px; box-shadow:0 3px 15px rgba(0,0,0,0.15);
+            animation: pulse-label 2s infinite;
+        }
+        @keyframes pulse-label { 0%,100%{opacity:1;} 50%{opacity:0.6;} }
+        .whatsapp-float-btn {
+            width:60px; height:60px; background:#25d366; border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            text-decoration:none; box-shadow:0 4px 20px rgba(37,211,102,0.5);
+            transition:transform 0.3s, box-shadow 0.3s; animation: wa-bounce 2s infinite;
+        }
+        .whatsapp-float-btn:hover { transform:scale(1.12); box-shadow:0 6px 25px rgba(37,211,102,0.7); }
+        @keyframes wa-bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
+
+        /* Admin Overlay */
+        .admin-overlay {
+            display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,0.7); z-index:1000; justify-content:center; align-items:center;
+        }
+        .admin-overlay.active { display:flex; }
+
+        .login-modal {
+            background:white; border-radius:20px; padding:40px;
+            width:90%; max-width:400px; text-align:center;
+            box-shadow:0 20px 60px rgba(0,0,0,0.3);
+        }
+        .login-modal h2 { color:#880e4f; margin-bottom:10px; font-size:1.5rem; }
+        .login-modal p  { color:#777; margin-bottom:25px; font-size:0.9rem; }
+        .login-modal input {
+            width:100%; padding:12px 20px; border:2px solid #f8bbd0;
+            border-radius:25px; font-size:1rem; margin-bottom:15px;
+            outline:none; text-align:center; letter-spacing:5px; transition:border-color 0.3s;
+        }
+        .login-modal input:focus { border-color:#e91e63; }
+        .login-btn {
+            width:100%; padding:12px;
+            background:linear-gradient(135deg,#880e4f,#e91e63);
+            color:white; border:none; border-radius:25px;
+            font-size:1rem; cursor:pointer; transition:opacity 0.3s; margin-bottom:10px;
+        }
+        .login-btn:hover { opacity:0.9; }
+        .cancel-btn {
+            background:none; border:2px solid #ddd; color:#777;
+            width:100%; padding:10px; border-radius:25px;
+            cursor:pointer; font-size:0.9rem; transition:all 0.3s;
+        }
+        .cancel-btn:hover { border-color:#e91e63; color:#e91e63; }
+        .error-msg { color:#e91e63; font-size:0.85rem; margin-bottom:10px; display:none; }
+
+        /* Admin Panel */
+        .admin-panel {
+            display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:#f5f5f5; z-index:999; overflow-y:auto;
+        }
+        .admin-panel.active { display:block; }
+
+        .admin-header {
+            background:linear-gradient(135deg,#880e4f,#c2185b);
+            color:white; padding:20px 40px;
+            display:flex; justify-content:space-between; align-items:center;
+        }
+        .admin-header h2 { font-size:1.5rem; letter-spacing:2px; }
+        .logout-btn {
+            background:rgba(255,255,255,0.2); color:white;
+            border:2px solid rgba(255,255,255,0.5); padding:8px 20px;
+            border-radius:20px; cursor:pointer; transition:all 0.3s;
+        }
+        .logout-btn:hover { background:white; color:#880e4f; }
+
+        .admin-content { max-width:1100px; margin:40px auto; padding:0 20px; }
+
+        /* Cloud sync status bar */
+        .sync-bar {
+            background:white; border-radius:14px; padding:14px 22px;
+            margin-bottom:20px; display:flex; align-items:center; gap:12px;
+            box-shadow:0 3px 15px rgba(0,0,0,0.08); font-size:0.88rem;
+        }
+        .sync-dot {
+            width:11px; height:11px; border-radius:50%; background:#4caf50;
+            flex-shrink:0; transition:background 0.3s;
+        }
+        .sync-dot.syncing { background:#ff9800; animation: blink 0.8s infinite; }
+        .sync-dot.error   { background:#f44336; }
+        @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+        .sync-text { color:#555; }
+
+        .whatsapp-settings {
+            background:white; border-radius:20px; padding:25px 30px;
+            margin-bottom:30px; box-shadow:0 5px 20px rgba(0,0,0,0.1);
+            display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+        }
+        .whatsapp-settings h3 { color:#880e4f; font-size:1.1rem; white-space:nowrap; }
+        .whatsapp-settings input {
+            flex:1; min-width:200px; padding:10px 16px;
+            border:2px solid #f0f0f0; border-radius:10px;
+            font-size:1rem; outline:none; transition:border-color 0.3s;
+        }
+        .whatsapp-settings input:focus { border-color:#25d366; }
+        .wa-save-btn {
+            padding:10px 24px; background:#25d366; color:white;
+            border:none; border-radius:10px; cursor:pointer;
+            font-size:0.95rem; font-weight:bold; transition:opacity 0.3s; white-space:nowrap;
+        }
+        .wa-save-btn:hover { opacity:0.85; }
+
+        .add-product-form {
+            background:white; border-radius:20px; padding:30px;
+            margin-bottom:40px; box-shadow:0 5px 20px rgba(0,0,0,0.1);
+        }
+        .add-product-form h3 { color:#880e4f; margin-bottom:20px; font-size:1.3rem; }
+
+        .form-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; margin-bottom:15px; }
+        .form-group { display:flex; flex-direction:column; gap:8px; }
+        .form-group label { font-size:0.85rem; color:#555; font-weight:bold; }
+        .form-group input, .form-group select {
+            padding:10px 15px; border:2px solid #f0f0f0;
+            border-radius:10px; font-size:0.95rem; outline:none; transition:border-color 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus { border-color:#e91e63; }
+
+        .image-upload-label {
+            display:flex; flex-direction:column; align-items:center;
+            justify-content:center; gap:8px; border:2px dashed #f48fb1;
+            border-radius:10px; padding:20px; cursor:pointer;
+            background:#fce4ec30; transition:all 0.3s; min-height:80px;
+        }
+        .image-upload-label:hover { border-color:#e91e63; background:#fce4ec60; }
+        .image-upload-label span { font-size:0.85rem; color:#880e4f; }
+        .image-upload-label input[type="file"] { display:none; }
+
+        .add-btn {
+            padding:11px 30px;
+            background:linear-gradient(135deg,#880e4f,#e91e63);
+            color:white; border:none; border-radius:10px;
+            cursor:pointer; font-size:0.95rem; transition:opacity 0.3s; width:100%;
+        }
+        .add-btn:hover { opacity:0.9; }
+
+        .products-table {
+            background:white; border-radius:20px; padding:30px;
+            box-shadow:0 5px 20px rgba(0,0,0,0.1); overflow-x:auto;
+        }
+        .products-table h3 { color:#880e4f; margin-bottom:20px; font-size:1.3rem; }
+
+        table { width:100%; border-collapse:collapse; min-width:750px; }
+        th {
+            background:linear-gradient(135deg,#fce4ec,#f8bbd0);
+            color:#880e4f; padding:12px 10px; text-align:left;
+            font-size:0.85rem; letter-spacing:1px;
+        }
+        th:first-child { border-radius:10px 0 0 10px; }
+        th:last-child  { border-radius:0 10px 10px 0; }
+        td { padding:10px; border-bottom:1px solid #f0f0f0; font-size:0.85rem; vertical-align:middle; }
+        tr:last-child td { border-bottom:none; }
+        tr:hover td { background:#fce4ec20; }
+
+        .admin-thumb { width:55px; height:55px; object-fit:cover; border-radius:10px; border:2px solid #f8bbd0; }
+        .admin-thumb-emoji {
+            width:55px; height:55px;
+            background:linear-gradient(135deg,#fce4ec,#f8bbd0);
+            border-radius:10px; display:flex; align-items:center;
+            justify-content:center; font-size:1.8rem;
+        }
+
+        .edit-input { padding:6px 10px; border:2px solid #f0f0f0; border-radius:8px; font-size:0.85rem; width:100%; outline:none; }
+        .edit-input:focus { border-color:#e91e63; }
+
+        .upload-small-label {
+            display:inline-flex; align-items:center; gap:5px;
+            padding:5px 12px; background:#fce4ec;
+            border:1px dashed #e91e63; border-radius:8px; cursor:pointer;
+            font-size:0.78rem; color:#880e4f; margin-top:6px; transition:background 0.3s;
+        }
+        .upload-small-label:hover { background:#f8bbd0; }
+        .upload-small-label input { display:none; }
+
+        .save-btn {
+            padding:6px 12px; background:#4caf50; color:white;
+            border:none; border-radius:8px; cursor:pointer;
+            font-size:0.78rem; margin-right:4px; transition:opacity 0.3s;
+        }
+        .save-btn:hover { opacity:0.8; }
+        .delete-btn {
+            padding:6px 12px; background:#f44336; color:white;
+            border:none; border-radius:8px; cursor:pointer;
+            font-size:0.78rem; transition:opacity 0.3s;
+        }
+        .delete-btn:hover { opacity:0.8; }
+
+        .mini-stock-bar { height:6px; background:#f0f0f0; border-radius:3px; overflow:hidden; margin-top:4px; }
+        .mini-stock-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,#e91e63,#f48fb1); transition:width 0.3s; }
+
+        footer {
+            background:linear-gradient(135deg,#880e4f,#c2185b);
+            color:white; text-align:center; padding:30px; margin-top:60px;
+        }
+        footer p { opacity:0.9; font-size:0.9rem; line-height:1.8; }
+
+        .toast {
+            position:fixed; bottom:100px; left:50%;
+            transform:translateX(-50%) translateY(30px);
+            background:#333; color:white; padding:12px 24px;
+            border-radius:25px; font-size:0.9rem; opacity:0;
+            transition:all 0.3s; z-index:9999; pointer-events:none;
+        }
+        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+        @media(max-width:768px) {
+            header { padding:15px 20px; }
+            .logo h1 { font-size:1.4rem; }
+            .hero h2 { font-size:1.8rem; }
+            .products-section { padding:20px; }
+            .form-grid { grid-template-columns:1fr; }
+            .admin-content { padding:0 15px; }
+            .whatsapp-float { bottom:20px; right:20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== LOADING SCREEN ===== -->
+<div id="loadingScreen">
+    <div class="loading-logo">💄</div>
+    <div class="loading-text">AMU COSMETICS</div>
+    <div class="loading-sub" id="loadingMsg">Loading products from cloud...</div>
+    <div class="loading-bar-track">
+        <div class="loading-bar-fill" id="loadingBar"></div>
+    </div>
+</div>
+
+<!-- ===== MAIN WEBSITE ===== -->
+<div id="mainSite">
+    <header>
+        <div class="logo">
+            <div class="logo-icon">❤️</div>
+            <div>
+                <h1>AMU COSMETICS</h1>
+                <p>BEAUTY & ELEGANCE</p>
+            </div>
+        </div>
+        <button class="admin-btn" onclick="showLogin()">⚙ Admin Panel</button>
+    </header>
+
+    <section class="hero">
+        <h2>Discover Your Beauty</h2>
+        <p>Premium cosmetics crafted with love and expertise. Enhance your natural beauty with our exclusive collection of skincare and makeup products.</p>
+    </section>
+
+    <section class="products-section">
+        <h2 class="section-title">Our Products</h2>
+        <div class="products-grid" id="productsGrid"></div>
+    </section>
+
+    <footer>
+        <p>💄 AMU Cosmetics — Beauty & Elegance</p>
+        <p>© 2024 AMU Cosmetics. All rights reserved.</p>
+    </footer>
+</div>
+
+<!-- ===== FLOATING WHATSAPP BUTTON ===== -->
+<div class="whatsapp-float" id="waFloat">
+    <div class="whatsapp-float-label">💬 Order on WhatsApp</div>
+    <a class="whatsapp-float-btn" id="waFloatLink" href="#" target="_blank" title="Chat on WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L.057 23.882l6.233-1.638A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.372l-.36-.214-3.7.972.986-3.607-.234-.37A9.818 9.818 0 1 1 12 21.818z"/>
+        </svg>
+    </a>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== LOGIN MODAL ===== -->
+<div class="admin-overlay" id="loginOverlay">
+    <div class="login-modal">
+        <div style="font-size:3rem;margin-bottom:15px;">🔐</div>
+        <h2>Admin Login</h2>
+        <p>Enter your password to access the admin panel</p>
+        <p class="error-msg" id="errorMsg">❌ Incorrect password. Please try again.</p>
+        <input type="password" id="passwordInput" placeholder="Enter Password" onkeypress="handleKeyPress(event)">
+        <button class="login-btn" onclick="checkPassword()">Login</button>
+        <button class="cancel-btn" onclick="hideLogin()">Cancel</button>
+    </div>
+</div>
+
+<!-- ===== ADMIN PANEL ===== -->
+<div class="admin-panel" id="adminPanel">
+    <div class="admin-header">
+        <h2>⚙ AMU Cosmetics — Admin Panel</h2>
+        <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+    </div>
+
+    <div class="admin-content">
+
+        <!-- Cloud Sync Status -->
+        <div class="sync-bar">
+            <div class="sync-dot" id="syncDot"></div>
+            <span class="sync-text" id="syncText">✅ Connected to cloud — all changes save automatically to JSONbin</span>
+        </div>
+
+        <!-- WhatsApp Number Setting -->
+        <div class="whatsapp-settings">
+            <h3>📱 WhatsApp Number:</h3>
+            <input type="text" id="waNumberInput" placeholder="e.g. 923325374732 (no + sign, with country code)">
+            <button class="wa-save-btn" onclick="saveWhatsApp()">☁️ Save to Cloud</button>
+        </div>
+
+        <!-- Add Product Form -->
+        <div class="add-product-form">
+            <h3>➕ Add New Product</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="newName" placeholder="e.g. Rose Lip Gloss">
+                </div>
+                <div class="form-group">
+                    <label>Price (PKR)</label>
+                    <input type="number" id="newPrice" placeholder="e.g. 850">
+                </div>
+                <div class="form-group">
+                    <label>Discount % (0 = none)</label>
+                    <input type="number" id="newDiscount" placeholder="e.g. 10" min="0" max="90">
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Total Stock (units)</label>
+                    <input type="number" id="newStock" placeholder="e.g. 100" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Units Sold</label>
+                    <input type="number" id="newSold" placeholder="e.g. 30" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Fallback Icon (if no image)</label>
+                    <select id="newIcon">
+                        <option value="💄">💄 Lipstick</option>
+                        <option value="💅">💅 Nail Polish</option>
+                        <option value="🧴">🧴 Skincare</option>
+                        <option value="👁️">👁️ Eye Makeup</option>
+                        <option value="🌸">🌸 Perfume</option>
+                        <option value="✨">✨ Highlighter</option>
+                        <option value="🫧">🫧 Cleanser</option>
+                        <option value="🧖">🧖 Mask</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" style="margin-bottom:15px;">
+                <label>Product Image (optional)</label>
+                <label class="image-upload-label" id="uploadLabel">
+                    <span style="font-size:2rem;">📷</span>
+                    <span>Click to upload product image</span>
+                    <span style="font-size:0.75rem;color:#aaa;">JPG, PNG, WEBP supported</span>
+                    <input type="file" id="newImage" accept="image/*" onchange="previewNewImage(event)">
+                </label>
+            </div>
+            <button class="add-btn" onclick="addProduct()">☁️ Add & Save to Cloud</button>
+        </div>
+
+        <!-- Products Table -->
+        <div class="products-table">
+            <h3>📦 Manage Products</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Image</th>
+                        <th>Product Name</th>
+                        <th>Price (PKR)</th>
+                        <th>Discount %</th>
+                        <th>Stock / Sold</th>
+                        <th>Change Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adminTableBody"></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // ═══════════════════════════════════════════════════════════
+    //  Supabase Configuration  (500MB free — no card needed)
+    //  Table name: store   |   Columns: key (text), value (text)
+    // ═══════════════════════════════════════════════════════════
+    const SB_URL  = 'https://rahskphzgzmjiqxkhism.supabase.co/rest/v1/store';
+    const SB_KEY  = 'sb_publishable_-wg-IbSFHygcFDVmMa_MFw_ppJIAbFN';
+    const SB_HEAD = {
+        'Content-Type'  : 'application/json',
+        'apikey'        : SB_KEY,
+        'Authorization' : 'Bearer ' + SB_KEY
+    };
+
+    // ═══════════════════════════════════════════════════════════
+    //  Default data  (used ONLY if Supabase table is empty)
+    // ═══════════════════════════════════════════════════════════
+    const DEFAULT_DATA = {
+        whatsapp : '923325374732',
+        nextId   : 9,
+        products : [
+            { id:1, name:'Velvet Rose Lipstick',  price:950,  icon:'💄', description:'Long-lasting matte finish',      image:null, discount:0,  stock:100, sold:20 },
+            { id:2, name:'Glow Serum',             price:1800, icon:'🧴', description:'Vitamin C brightening formula',  image:null, discount:10, stock:80,  sold:45 },
+            { id:3, name:'Crystal Nail Polish',    price:450,  icon:'💅', description:'Chip-resistant glossy finish',   image:null, discount:0,  stock:150, sold:60 },
+            { id:4, name:'Smoky Eye Palette',      price:1200, icon:'👁️', description:'12 rich pigmented shades',       image:null, discount:15, stock:60,  sold:30 },
+            { id:5, name:'Midnight Bloom Perfume', price:2500, icon:'🌸', description:'Floral & musky fragrance',       image:null, discount:0,  stock:40,  sold:10 },
+            { id:6, name:'Diamond Highlighter',    price:750,  icon:'✨', description:'Blinding shimmer effect',        image:null, discount:5,  stock:90,  sold:55 },
+            { id:7, name:'Hydra Foam Cleanser',    price:680,  icon:'🫧', description:'Gentle daily face wash',         image:null, discount:0,  stock:120, sold:40 },
+            { id:8, name:'Charcoal Face Mask',     price:550,  icon:'🧖', description:'Deep pore cleansing mask',       image:null, discount:20, stock:70,  sold:50 }
+        ]
+    };
+
+    // ═══════════════════════════════════════════════════════════
+    //  App State
+    // ═══════════════════════════════════════════════════════════
+    let products     = [];
+    let WHATSAPP_NUM = '923325374732';
+    let nextId       = 9;
+    let newImageData = null;
+    let isSaving     = false;
+
+    // ═══════════════════════════════════════════════════════════
+    //  Supabase — READ  (GET /store?key=eq.amu_data)
+    // ═══════════════════════════════════════════════════════════
+    async function loadFromCloud() {
+        setLoading(30, 'Connecting to Supabase cloud...');
+        try {
+            const res = await fetch(SB_URL + '?key=eq.amu_data&select=value', {
+                headers: SB_HEAD
+            });
+
+            if (!res.ok) throw new Error('Fetch failed ' + res.status);
+            const rows = await res.json();
+
+            setLoading(70, 'Loading your products...');
+
+            if (rows && rows.length > 0) {
+                // Row found — parse stored JSON
+                const data   = JSON.parse(rows[0].value);
+                products     = data.products || DEFAULT_DATA.products;
+                WHATSAPP_NUM = data.whatsapp  || DEFAULT_DATA.whatsapp;
+                nextId       = data.nextId    || 9;
+            } else {
+                // First time — write defaults to Supabase
+                setLoading(55, 'Setting up your store for the first time...');
+                products     = DEFAULT_DATA.products;
+                WHATSAPP_NUM = DEFAULT_DATA.whatsapp;
+                nextId       = DEFAULT_DATA.nextId;
+                await saveToCloud();
+            }
+
+            setLoading(100, 'Done!');
+            setSyncStatus('connected');
+
+        } catch(err) {
+            console.error('Load error:', err);
+            products     = DEFAULT_DATA.products;
+            WHATSAPP_NUM = DEFAULT_DATA.whatsapp;
+            nextId       = DEFAULT_DATA.nextId;
+            setLoading(100, 'Loaded (offline mode)');
+            setSyncStatus('error');
+            showToast('Could not reach cloud. Showing default products.');
+        } finally {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.display = 'none';
+                updateFloatBtn();
+                renderProducts();
+            }, 500);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  Supabase — WRITE  (UPSERT /store)
+    //  Supabase has no per-request size limit on the free tier
+    //  so images of any compressed size will save fine.
+    // ═══════════════════════════════════════════════════════════
+    async function saveToCloud() {
+        if (isSaving) return;
+        isSaving = true;
+        setSyncStatus('syncing');
+        try {
+            const payload = JSON.stringify({ products, whatsapp: WHATSAPP_NUM, nextId });
+            const body    = JSON.stringify([{ key: 'amu_data', value: payload }]);
+
+            const res = await fetch(SB_URL, {
+                method  : 'POST',
+                headers : { ...SB_HEAD, 'Prefer': 'resolution=merge-duplicates' },
+                body    : body
+            });
+
+            // 200, 201, 204 are all success
+            if (!res.ok && res.status !== 204) {
+                const errText = await res.text();
+                throw new Error('Save failed ' + res.status + ' — ' + errText);
+            }
+            setSyncStatus('connected');
+
+        } catch(err) {
+            console.error('Save error:', err);
+            setSyncStatus('error');
+            showToast('Cloud save failed: ' + err.message);
+        } finally {
+            isSaving = false;
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  UI Helpers
+    // ═══════════════════════════════════════════════════════════
+    function setLoading(pct, msg) {
+        document.getElementById('loadingBar').style.width = pct + '%';
+        document.getElementById('loadingMsg').textContent = msg;
+    }
+
+    function setSyncStatus(state) {
+        const dot  = document.getElementById('syncDot');
+        const text = document.getElementById('syncText');
+        if (!dot) return;
+        dot.className = 'sync-dot' + (state === 'syncing' ? ' syncing' : state === 'error' ? ' error' : '');
+        if (state === 'connected') text.textContent = '✅ Connected to Supabase cloud (500MB free) — changes save instantly';
+        if (state === 'syncing')   text.textContent = '🔄 Saving to Supabase cloud...';
+        if (state === 'error')     text.textContent = '❌ Cloud error — check internet or Supabase table setup';
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    function discountedPrice(price, discount) {
+        if (!discount || discount <= 0) return price;
+        return Math.round(price * (1 - discount / 100));
+    }
+
+    function soldPercent(stock, sold) {
+        if (!stock || stock <= 0) return 0;
+        return Math.min(100, Math.round((sold / stock) * 100));
+    }
+
+    function stockBarClass(pct) {
+        if (pct >= 70) return 'high';
+        if (pct >= 35) return 'medium';
+        return 'low';
+    }
+
+    function updateFloatBtn() {
+        document.getElementById('waFloatLink').href =
+            'https://wa.me/' + WHATSAPP_NUM + '?text=Hi!%20I%20want%20to%20place%20an%20order%20from%20AMU%20Cosmetics.';
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  Smart Image Compressor
+    //  Supabase has no per-request limit so we compress to 300KB
+    //  for fast loading — much better than JSONbin's 80KB limit
+    // ═══════════════════════════════════════════════════════════
+    function compressImage(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onerror = () => reject(new Error('Could not read file'));
+            reader.onload  = (e) => {
+                const img = new Image();
+                img.onerror = () => reject(new Error('Could not load image'));
+                img.onload  = () => {
+                    // Resize so longest side ≤ 800px (bigger than JSONbin allowed)
+                    const MAX = 800;
+                    let w = img.width, h = img.height;
+                    if (w > MAX || h > MAX) {
+                        if (w >= h) { h = Math.round(h * MAX / w); w = MAX; }
+                        else        { w = Math.round(w * MAX / h); h = MAX; }
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width  = w;
+                    canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+
+                    // Target 300KB (much more generous than JSONbin's 80KB)
+                    const TARGET = 300 * 1024 * 1.37;
+                    let quality  = 0.85;
+                    let dataURL  = canvas.toDataURL('image/jpeg', quality);
+                    while (dataURL.length > TARGET && quality > 0.2) {
+                        quality -= 0.05;
+                        dataURL  = canvas.toDataURL('image/jpeg', quality);
+                    }
+                    console.log('Compressed to ~' + Math.round(dataURL.length/1024) + 'KB at quality ' + Math.round(quality*100) + '%');
+                    resolve(dataURL);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function previewNewImage(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const label = document.getElementById('uploadLabel');
+        label.innerHTML = '<span style="font-size:1.5rem;">⏳</span><span style="font-size:0.85rem;color:#880e4f;">Compressing image...</span><input type="file" id="newImage" accept="image/*" onchange="previewNewImage(event)">';
+        try {
+            newImageData = await compressImage(file);
+            label.innerHTML = '<img src="' + newImageData + '" style="width:80px;height:80px;object-fit:cover;border-radius:10px;border:2px solid #f48fb1;"><span style="font-size:0.8rem;color:#4caf50;">✅ Image ready — click to change</span><input type="file" id="newImage" accept="image/*" onchange="previewNewImage(event)">';
+        } catch(err) {
+            newImageData = null;
+            label.innerHTML = '<span style="font-size:1.5rem;">❌</span><span style="font-size:0.85rem;color:#f44336;">Could not process image. Try another file.</span><input type="file" id="newImage" accept="image/*" onchange="previewNewImage(event)">';
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  Render customer product grid
+    // ═══════════════════════════════════════════════════════════
+    function renderProducts() {
+        const grid = document.getElementById('productsGrid');
+        grid.innerHTML = '';
+        if (!products.length) {
+            grid.innerHTML = '<p style="text-align:center;color:#888;grid-column:1/-1;padding:40px;">No products yet. Add some from the admin panel.</p>';
+            return;
+        }
+        products.forEach(p => {
+            const imgHTML   = p.image ? '<img src="' + p.image + '" alt="' + p.name + '">' : '<div class="product-emoji-placeholder">' + p.icon + '</div>';
+            const disc      = p.discount || 0;
+            const finalP    = discountedPrice(p.price, disc);
+            const stock     = p.stock || 0;
+            const sold      = p.sold  || 0;
+            const pct       = soldPercent(stock, sold);
+            const barClass  = stockBarClass(pct);
+            const remaining = Math.max(0, stock - sold);
+            const discBadge  = disc > 0 ? '<div class="discount-badge">🏷 ' + disc + '% OFF</div>' : '';
+            const stockBadge = remaining <= 0 ? '<div class="out-of-stock-badge">❌ Out of Stock</div>' : '';
+            const priceHTML  = disc > 0
+                ? '<div class="product-price-original">PKR ' + Number(p.price).toLocaleString() + '</div><div class="product-price">PKR ' + Number(finalP).toLocaleString() + '</div>'
+                : '<div class="product-price">PKR ' + Number(p.price).toLocaleString() + '</div>';
+            const stockBarHTML = stock > 0
+                ? '<div class="stock-bar-wrapper"><div class="stock-bar-label"><span>🛍 ' + pct + '% Sold</span><span>📦 ' + remaining + ' left</span></div><div class="stock-bar-track"><div class="stock-bar-fill ' + barClass + '" style="width:' + pct + '%"></div></div></div>'
+                : '';
+            const waIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L.057 23.882l6.233-1.638A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.372l-.36-.214-3.7.972.986-3.607-.234-.37A9.818 9.818 0 1 1 12 21.818z"/></svg>';
+            const orderBtn = remaining <= 0
+                ? '<div style="text-align:center;color:#aaa;font-size:0.85rem;padding:8px;">❌ Currently Out of Stock</div>'
+                : '<a class="whatsapp-link" href="https://wa.me/' + WHATSAPP_NUM + '?text=Hi!%20I%20want%20to%20order%20*' + encodeURIComponent(p.name) + '*%20(PKR%20' + finalP + ')" target="_blank">' + waIcon + ' Order via WhatsApp</a>';
+
+            grid.innerHTML +=
+                '<div class="product-card" id="card-' + p.id + '">' +
+                discBadge + stockBadge +
+                '<div class="product-image-wrapper" onclick="toggleOrder(' + p.id + ')">' + imgHTML + '<span class="click-hint">👆 Tap to order</span></div>' +
+                '<div class="product-info">' +
+                '<div class="product-name">' + p.name + '</div>' +
+                '<div class="product-description">' + p.description + '</div>' +
+                priceHTML + stockBarHTML +
+                '<div class="order-info" id="order-' + p.id + '"><p>📦 To Order This Product:</p><div class="owner-name">👤 Muddsar</div>' + orderBtn + '</div>' +
+                '</div></div>';
+        });
+    }
+
+    function toggleOrder(id) {
+        document.querySelectorAll('.order-info').forEach(el => {
+            if (el.id !== 'order-' + id) el.classList.remove('visible');
+        });
+        document.getElementById('order-' + id).classList.toggle('visible');
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  Render admin table
+    // ═══════════════════════════════════════════════════════════
+    function renderAdminTable() {
+        document.getElementById('waNumberInput').value = WHATSAPP_NUM;
+        const tbody = document.getElementById('adminTableBody');
+        tbody.innerHTML = '';
+        products.forEach((p, index) => {
+            const thumbHTML = p.image
+                ? '<img class="admin-thumb" src="' + p.image + '" alt="' + p.name + '">'
+                : '<div class="admin-thumb-emoji">' + p.icon + '</div>';
+            const disc  = p.discount || 0;
+            const stock = p.stock    || 0;
+            const sold  = p.sold     || 0;
+            const pct   = soldPercent(stock, sold);
+            tbody.innerHTML +=
+                '<tr id="row-' + p.id + '">' +
+                '<td>' + (index+1) + '</td>' +
+                '<td id="thumb-' + p.id + '">' + thumbHTML + '</td>' +
+                '<td><input class="edit-input" id="name-' + p.id + '" value="' + p.name + '" style="min-width:120px"></td>' +
+                '<td><input class="edit-input" id="price-' + p.id + '" type="number" value="' + p.price + '" style="width:100px"></td>' +
+                '<td><input class="edit-input" id="discount-' + p.id + '" type="number" value="' + disc + '" min="0" max="90" style="width:65px"> %</td>' +
+                '<td><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">' +
+                '<input class="edit-input" id="stock-' + p.id + '" type="number" value="' + stock + '" min="0" style="width:65px" title="Total Stock">' +
+                '<input class="edit-input" id="sold-' + p.id + '" type="number" value="' + sold + '" min="0" style="width:65px" title="Units Sold">' +
+                '</div><div class="mini-stock-bar"><div class="mini-stock-fill" style="width:' + pct + '%"></div></div>' +
+                '<div style="font-size:0.72rem;color:#888;margin-top:2px;">' + pct + '% sold · ' + Math.max(0,stock-sold) + ' left</div></td>' +
+                '<td><label class="upload-small-label">📷 Upload<input type="file" accept="image/*" onchange="changeProductImage(event,' + p.id + ')"></label></td>' +
+                '<td><button class="save-btn" onclick="saveProduct(' + p.id + ')">☁️ Save</button> <button class="delete-btn" onclick="deleteProduct(' + p.id + ')">🗑 Delete</button></td>' +
+                '</tr>';
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  Admin Actions
+    // ═══════════════════════════════════════════════════════════
+    async function saveWhatsApp() {
+        const val = document.getElementById('waNumberInput').value.trim().replace(/\D/g, '');
+        if (!val || val.length < 10) { showToast('Please enter a valid number e.g. 923325374732'); return; }
+        WHATSAPP_NUM = val;
+        updateFloatBtn();
+        await saveToCloud();
+        showToast('✅ WhatsApp number saved to Supabase!');
+    }
+
+    async function changeProductImage(event, id) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const thumbCell = document.getElementById('thumb-' + id);
+        thumbCell.innerHTML = '<div class="admin-thumb-emoji" style="font-size:0.85rem;color:#880e4f;">⏳</div>';
+        try {
+            const data    = await compressImage(file);
+            const product = products.find(p => p.id === id);
+            if (product) {
+                product.image   = data;
+                thumbCell.innerHTML = '<img class="admin-thumb" src="' + data + '" alt="' + product.name + '">';
+                showToast('✅ Image ready — click ☁️ Save to upload');
+            }
+        } catch(err) {
+            thumbCell.innerHTML = '<div class="admin-thumb-emoji">❌</div>';
+            showToast('Could not process image. Try a different file.');
+        }
+    }
+
+    async function saveProduct(id) {
+        const product = products.find(p => p.id === id);
+        if (!product) return;
+        product.name     = document.getElementById('name-'     + id).value.trim() || product.name;
+        product.price    = parseFloat(document.getElementById('price-'    + id).value) || product.price;
+        product.discount = parseFloat(document.getElementById('discount-' + id).value) || 0;
+        product.stock    = parseInt(document.getElementById('stock-'   + id).value)    || 0;
+        product.sold     = parseInt(document.getElementById('sold-'    + id).value)    || 0;
+        if (product.sold > product.stock) product.sold = product.stock;
+        await saveToCloud();
+        renderProducts();
+        renderAdminTable();
+        showToast('✅ Product saved to Supabase cloud!');
+    }
+
+    async function deleteProduct(id) {
+        if (!confirm('Are you sure you want to delete this product?')) return;
+        products = products.filter(p => p.id !== id);
+        await saveToCloud();
+        renderProducts();
+        renderAdminTable();
+        showToast('🗑 Product deleted from cloud!');
+    }
+
+    async function addProduct() {
+        const name     = document.getElementById('newName').value.trim();
+        const price    = parseFloat(document.getElementById('newPrice').value);
+        const discount = parseFloat(document.getElementById('newDiscount').value) || 0;
+        const stock    = parseInt(document.getElementById('newStock').value)      || 0;
+        const sold     = parseInt(document.getElementById('newSold').value)       || 0;
+        const icon     = document.getElementById('newIcon').value;
+        if (!name || !price) { showToast('Please fill in product name and price!'); return; }
+        products.push({ id: nextId++, name, price, icon, description: 'Premium quality product', image: newImageData || null, discount, stock, sold: Math.min(sold, stock) });
+        document.getElementById('newName').value     = '';
+        document.getElementById('newPrice').value    = '';
+        document.getElementById('newDiscount').value = '';
+        document.getElementById('newStock').value    = '';
+        document.getElementById('newSold').value     = '';
+        newImageData = null;
+        document.getElementById('uploadLabel').innerHTML = '<span style="font-size:2rem;">📷</span><span>Click to upload product image</span><span style="font-size:0.75rem;color:#aaa;">JPG, PNG, WEBP supported</span><input type="file" id="newImage" accept="image/*" onchange="previewNewImage(event)">';
+        await saveToCloud();
+        renderProducts();
+        renderAdminTable();
+        showToast('✅ Product added & saved to Supabase!');
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  Login / Logout
+    // ═══════════════════════════════════════════════════════════
+    function showLogin() {
+        document.getElementById('loginOverlay').classList.add('active');
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('errorMsg').style.display = 'none';
+        setTimeout(() => document.getElementById('passwordInput').focus(), 100);
+    }
+    function hideLogin()  { document.getElementById('loginOverlay').classList.remove('active'); }
+    function handleKeyPress(e) { if (e.key === 'Enter') checkPassword(); }
+    function checkPassword() {
+        if (document.getElementById('passwordInput').value === '1234') {
+            hideLogin();
+            document.getElementById('adminPanel').classList.add('active');
+            renderAdminTable();
+        } else {
+            document.getElementById('errorMsg').style.display = 'block';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
+        }
+    }
+    function logout() {
+        document.getElementById('adminPanel').classList.remove('active');
+        renderProducts();
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  START
+    // ═══════════════════════════════════════════════════════════
+    loadFromCloud();
+</script>
+</body>
+</html>
