@@ -1,0 +1,43 @@
+{
+  "name": "AUM Enterprises",
+  "short_name": "AUM Shop",
+  "description": "AUM Enterprises — Beauty & Elegance. Quality You Can Trust.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fce4ec",
+  "theme_color": "#880e4f",
+  "lang": "en",
+  "categories": ["shopping", "lifestyle"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Cosmetics",
+      "short_name": "Cosmetics",
+      "description": "Browse cosmetics products",
+      "url": "/?page=cosmetics",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Wax Products",
+      "short_name": "Wax",
+      "description": "Browse wax products",
+      "url": "/?page=wax",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

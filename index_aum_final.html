@@ -1,0 +1,2061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AUM Enterprises</title>
+    <meta name="theme-color"                           content="#880e4f">
+    <meta name="apple-mobile-web-app-capable"          content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title"            content="AUM Enterprises">
+    <meta name="application-name"                      content="AUM Enterprises">
+    <meta name="mobile-web-app-capable"                content="yes">
+    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg,#fce4ec 0%,#f8bbd0 50%,#f48fb1 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* ── HEADER ── */
+        header {
+            background: linear-gradient(135deg,#880e4f,#c2185b,#e91e63);
+            color: white;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(136,14,79,0.4);
+            position: sticky; top:0; z-index: 100;
+        }
+        .logo { display:flex; align-items:center; gap:10px; }
+        .logo-icon {
+            width:40px; height:40px; background:white;
+            border-radius:50%; display:flex; align-items:center;
+            justify-content:center; font-size:20px; flex-shrink:0;
+        }
+
+        /* ── BRAND LOGO FRAME ── */
+        .brand-logo-frame {
+            width:46px; height:46px; border-radius:50%;
+            border:2.5px solid rgba(255,255,255,0.7);
+            box-shadow:0 0 0 2px rgba(255,255,255,0.25), 0 3px 12px rgba(0,0,0,0.25);
+            overflow:hidden; flex-shrink:0; background:rgba(255,255,255,0.15);
+            display:flex; align-items:center; justify-content:center;
+            position:relative; cursor:default;
+        }
+        .brand-logo-frame img {
+            width:100%; height:100%; object-fit:cover; border-radius:50%;
+        }
+        .brand-logo-placeholder {
+            width:100%; height:100%; display:flex; align-items:center;
+            justify-content:center; flex-direction:column; gap:2px;
+            opacity:0.55;
+        }
+        .brand-logo-placeholder svg { width:22px; height:22px; fill:white; }
+        @media(min-width:600px) {
+            .brand-logo-frame { width:54px; height:54px; border-width:3px; }
+        }
+        .logo h1 { font-size:1.3rem; letter-spacing:2px; text-shadow:2px 2px 4px rgba(0,0,0,0.3); line-height:1.2; }
+        .logo p  { font-size:0.65rem; letter-spacing:2px; opacity:0.9; }
+        .admin-btn {
+            background:rgba(255,255,255,0.2); color:white;
+            border:2px solid rgba(255,255,255,0.5); padding:8px 14px;
+            border-radius:25px; cursor:pointer; font-size:0.8rem;
+            letter-spacing:0.5px; transition:all 0.3s; white-space:nowrap; flex-shrink:0;
+        }
+        .admin-btn:hover, .admin-btn:active { background:white; color:#880e4f; }
+
+        /* ── LOADING SCREEN ── */
+        #loadingScreen {
+            position:fixed; top:0; left:0; width:100%; height:100%;
+            background:linear-gradient(135deg,#fce4ec,#f8bbd0,#f48fb1);
+            z-index:9999; display:flex; flex-direction:column;
+            align-items:center; justify-content:center; gap:18px;
+            padding:20px;
+        }
+        .loading-logo {
+            animation: pulse 1.2s infinite, loadFloat 2s ease-in-out infinite;
+        }
+        /* ── LOADING LOGO FRAME ── */
+        .loading-logo-frame {
+            width: 110px; height: 110px; border-radius: 50%;
+            background: white;
+            border: 4px solid #880e4f;
+            box-shadow:
+                0 0 0 6px rgba(136,14,79,0.15),
+                0 0 0 12px rgba(136,14,79,0.07),
+                0 12px 40px rgba(136,14,79,0.35);
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+        .loading-logo-frame img {
+            width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+        }
+        .loading-logo-placeholder {
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+        }
+        .loading-logo-placeholder svg {
+            width: 52px; height: 52px; fill: #c2185b; opacity: 0.6;
+        }
+        @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.15);} }
+        .loading-text { color:#880e4f; font-size:1.2rem; font-weight:bold; letter-spacing:2px; text-align:center; }
+        .loading-sub  { color:#c2185b; font-size:0.85rem; text-align:center; }
+        .loading-bar-track { width:200px; height:6px; background:rgba(136,14,79,0.2); border-radius:3px; overflow:hidden; }
+        .loading-bar-fill  { height:100%; width:0%; background:linear-gradient(90deg,#880e4f,#e91e63); border-radius:3px; transition:width 0.4s; }
+
+        /* ── HERO ── */
+        .hero {
+            text-align:center; padding:36px 20px 28px;
+            background:linear-gradient(180deg,rgba(255,255,255,0.3) 0%,transparent 100%);
+        }
+        .hero h2 { font-size:1.7rem; color:#880e4f; margin-bottom:10px; text-shadow:1px 1px 3px rgba(0,0,0,0.1); }
+        .hero p   { font-size:0.95rem; color:#555; max-width:560px; margin:0 auto; line-height:1.7; }
+
+        /* ── PRODUCTS SECTION ── */
+        .products-section { padding:20px 14px 40px; max-width:1200px; margin:0 auto; }
+        .section-title { text-align:center; font-size:1.5rem; color:#880e4f; margin-bottom:24px; position:relative; }
+        .section-title::after {
+            content:''; display:block; width:60px; height:3px;
+            background:linear-gradient(135deg,#e91e63,#f48fb1);
+            margin:8px auto 0; border-radius:2px;
+        }
+
+        /* ── PRODUCT GRID ── */
+        .products-grid {
+            display:grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap:12px;
+        }
+
+        .product-card {
+            background:white; border-radius:16px; overflow:hidden;
+            box-shadow:0 4px 18px rgba(136,14,79,0.13);
+            transition:transform 0.3s, box-shadow 0.3s; position:relative;
+        }
+        .product-card:active { transform:scale(0.98); }
+
+        .discount-badge {
+            position:absolute; top:8px; left:8px;
+            background:linear-gradient(135deg,#e91e63,#880e4f);
+            color:white; font-size:0.65rem; font-weight:bold;
+            padding:3px 8px; border-radius:20px; z-index:10; letter-spacing:0.5px;
+        }
+        .out-of-stock-badge {
+            position:absolute; top:8px; right:8px;
+            background:rgba(0,0,0,0.7); color:white;
+            font-size:0.62rem; padding:3px 8px; border-radius:20px; z-index:10;
+        }
+
+        .product-image-wrapper { position:relative; height:160px; cursor:pointer; overflow:hidden; }
+        .product-image-wrapper img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
+        .product-image-wrapper:active img { transform:scale(1.03); }
+        .product-emoji-placeholder {
+            width:100%; height:100%; display:flex; align-items:center;
+            justify-content:center; font-size:4rem;
+            background:linear-gradient(135deg,#fce4ec,#f8bbd0);
+        }
+        .click-hint {
+            position:absolute; bottom:6px; right:6px;
+            background:rgba(136,14,79,0.85); color:white;
+            font-size:0.6rem; padding:3px 8px; border-radius:20px;
+            letter-spacing:0.5px; pointer-events:none;
+        }
+
+        .product-info { padding:12px; }
+        .product-name { font-size:0.9rem; font-weight:bold; color:#333; margin-bottom:3px; line-height:1.3; }
+        .product-description { font-size:0.75rem; color:#777; margin-bottom:8px; line-height:1.45;
+            display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+        .product-price { font-size:1.05rem; font-weight:bold; color:#e91e63; margin-bottom:3px; }
+        .product-price-original { font-size:0.78rem; color:#aaa; text-decoration:line-through; margin-bottom:6px; }
+
+        .stock-bar-wrapper { margin-bottom:10px; }
+        .stock-bar-label { font-size:0.68rem; color:#888; margin-bottom:3px; display:flex; justify-content:space-between; }
+        .stock-bar-track { height:5px; background:#f0f0f0; border-radius:3px; overflow:hidden; }
+        .stock-bar-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,#e91e63,#f48fb1); transition:width 0.4s; }
+        .stock-bar-fill.low    { background:linear-gradient(90deg,#f44336,#ff7043); }
+        .stock-bar-fill.medium { background:linear-gradient(90deg,#ff9800,#ffc107); }
+        .stock-bar-fill.high   { background:linear-gradient(90deg,#4caf50,#81c784); }
+
+        .order-info {
+            display:none; background:linear-gradient(135deg,#fce4ec,#f8bbd0);
+            border:2px solid #e91e63; border-radius:10px; padding:10px;
+            margin-top:8px; animation:slideDown 0.3s ease;
+        }
+        .order-info.visible { display:block; }
+        @keyframes slideDown { from{opacity:0;transform:translateY(-8px);} to{opacity:1;transform:translateY(0);} }
+        .order-info p { font-size:0.78rem; color:#880e4f; font-weight:bold; margin-bottom:5px; }
+        .order-info .owner-name { font-size:0.85rem; color:#333; font-weight:bold; margin-bottom:8px; }
+
+        .whatsapp-link {
+            display:flex; align-items:center; justify-content:center; gap:6px;
+            background:#25d366; color:white; text-decoration:none;
+            padding:9px 12px; border-radius:20px; font-size:0.8rem;
+            font-weight:bold; transition:background 0.3s; width:100%;
+        }
+        .whatsapp-link:active { background:#128c7e; }
+
+        /* ── FLOATING WHATSAPP ── */
+        .whatsapp-float {
+            position:fixed; bottom:20px; right:16px; z-index:998;
+            display:flex; flex-direction:column; align-items:flex-end; gap:6px;
+        }
+        .whatsapp-float-label {
+            background:white; color:#128c7e; font-size:0.72rem; font-weight:bold;
+            padding:5px 10px; border-radius:20px; box-shadow:0 3px 15px rgba(0,0,0,0.15);
+            animation:pulse-label 2s infinite;
+        }
+        @keyframes pulse-label { 0%,100%{opacity:1;} 50%{opacity:0.6;} }
+        .whatsapp-float-btn {
+            width:54px; height:54px; background:#25d366; border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            text-decoration:none; box-shadow:0 4px 20px rgba(37,211,102,0.5);
+            animation:wa-bounce 2s infinite;
+        }
+        @keyframes wa-bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-5px);} }
+
+        /* ── TOAST ── */
+        .toast {
+            position:fixed; bottom:90px; left:50%;
+            transform:translateX(-50%) translateY(30px);
+            background:#333; color:white; padding:10px 20px;
+            border-radius:25px; font-size:0.85rem; opacity:0;
+            transition:all 0.3s; z-index:9999; pointer-events:none;
+            white-space:nowrap; max-width:90vw; text-align:center;
+        }
+        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+        /* ── LOGIN MODAL ── */
+        .admin-overlay {
+            display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,0.7); z-index:1000;
+            justify-content:center; align-items:center; padding:16px;
+        }
+        .admin-overlay.active { display:flex; }
+        .login-modal {
+            background:white; border-radius:20px; padding:30px 24px;
+            width:100%; max-width:380px; text-align:center;
+            box-shadow:0 20px 60px rgba(0,0,0,0.3);
+        }
+        .login-modal h2 { color:#880e4f; margin-bottom:8px; font-size:1.4rem; }
+        .login-modal > p { color:#777; margin-bottom:20px; font-size:0.85rem; }
+        .login-modal input {
+            width:100%; padding:12px 16px; border:2px solid #f8bbd0;
+            border-radius:25px; font-size:1rem; margin-bottom:12px;
+            outline:none; text-align:center; letter-spacing:4px; transition:border-color 0.3s;
+        }
+        .login-modal input:focus { border-color:#e91e63; }
+        .login-btn {
+            width:100%; padding:12px;
+            background:linear-gradient(135deg,#880e4f,#e91e63);
+            color:white; border:none; border-radius:25px;
+            font-size:1rem; cursor:pointer; margin-bottom:10px;
+        }
+        .cancel-btn {
+            background:none; border:2px solid #ddd; color:#777;
+            width:100%; padding:10px; border-radius:25px;
+            cursor:pointer; font-size:0.9rem;
+        }
+        .error-msg { color:#e91e63; font-size:0.82rem; margin-bottom:10px; display:none; }
+
+        /* ── ADMIN PANEL ── */
+        .admin-panel {
+            display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:#f5f5f5; z-index:999; overflow-y:auto;
+            -webkit-overflow-scrolling:touch;
+        }
+        .admin-panel.active { display:block; }
+
+        .admin-header {
+            background:linear-gradient(135deg,#880e4f,#c2185b);
+            color:white; padding:14px 16px;
+            display:flex; justify-content:space-between; align-items:center;
+            position:sticky; top:0; z-index:10;
+        }
+        .admin-header h2 { font-size:1.05rem; letter-spacing:1px; }
+        .logout-btn {
+            background:rgba(255,255,255,0.2); color:white;
+            border:2px solid rgba(255,255,255,0.5); padding:7px 14px;
+            border-radius:20px; cursor:pointer; font-size:0.8rem;
+        }
+        .logout-btn:active { background:white; color:#880e4f; }
+
+        .admin-content { max-width:900px; margin:0 auto; padding:16px 12px 40px; }
+
+        /* Sync bar */
+        .sync-bar {
+            background:white; border-radius:12px; padding:12px 16px;
+            margin-bottom:14px; display:flex; align-items:center; gap:10px;
+            box-shadow:0 3px 12px rgba(0,0,0,0.08); font-size:0.8rem;
+        }
+        .sync-dot { width:10px; height:10px; border-radius:50%; background:#4caf50; flex-shrink:0; transition:background 0.3s; }
+        .sync-dot.syncing { background:#ff9800; animation:blink 0.8s infinite; }
+        .sync-dot.error   { background:#f44336; }
+        @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+        .sync-text { color:#555; }
+
+        /* Admin settings cards */
+        .admin-card {
+            background:white; border-radius:16px; padding:18px 16px;
+            margin-bottom:16px; box-shadow:0 4px 16px rgba(0,0,0,0.08);
+        }
+        .admin-card h3 { color:#880e4f; margin-bottom:14px; font-size:1rem; }
+
+        /* Setting rows */
+        .setting-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+        .setting-row input {
+            flex:1; min-width:160px; padding:10px 14px;
+            border:2px solid #f0f0f0; border-radius:10px;
+            font-size:0.9rem; outline:none; transition:border-color 0.3s;
+        }
+        .setting-row input:focus { border-color:#e91e63; }
+        .setting-btn {
+            padding:10px 18px; color:white; border:none;
+            border-radius:10px; cursor:pointer; font-size:0.85rem;
+            font-weight:bold; white-space:nowrap;
+        }
+        .btn-green  { background:#25d366; }
+        .btn-pink   { background:linear-gradient(135deg,#880e4f,#e91e63); }
+        .btn-orange { background:#ff9800; }
+
+        /* Password change section */
+        .pwd-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+        .pwd-grid input {
+            padding:10px 14px; border:2px solid #f0f0f0;
+            border-radius:10px; font-size:0.9rem; outline:none; transition:border-color 0.3s;
+        }
+        .pwd-grid input:focus { border-color:#e91e63; }
+        .pwd-note { font-size:0.75rem; color:#888; margin-bottom:10px; }
+
+        /* Add product form */
+        .form-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:12px; }
+        .form-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+        .form-group { display:flex; flex-direction:column; gap:6px; }
+        .form-group label { font-size:0.78rem; color:#555; font-weight:bold; }
+        .form-group input, .form-group select, .form-group textarea {
+            padding:9px 12px; border:2px solid #f0f0f0;
+            border-radius:10px; font-size:0.88rem; outline:none;
+            transition:border-color 0.3s; font-family:inherit;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:#e91e63; }
+        .form-group textarea { resize:vertical; min-height:60px; line-height:1.4; }
+
+        .image-upload-label {
+            display:flex; flex-direction:column; align-items:center;
+            justify-content:center; gap:6px; border:2px dashed #f48fb1;
+            border-radius:10px; padding:16px; cursor:pointer;
+            background:#fce4ec20; transition:all 0.3s; min-height:70px;
+        }
+        .image-upload-label:active { border-color:#e91e63; background:#fce4ec50; }
+        .image-upload-label span { font-size:0.8rem; color:#880e4f; text-align:center; }
+        .image-upload-label input[type="file"] { display:none; }
+
+        .add-btn {
+            padding:12px 20px;
+            background:linear-gradient(135deg,#880e4f,#e91e63);
+            color:white; border:none; border-radius:10px;
+            cursor:pointer; font-size:0.92rem; width:100%;
+        }
+
+        /* Products manage cards (mobile-friendly, no table) */
+        .products-manage { }
+        .products-manage h3 { color:#880e4f; margin-bottom:14px; font-size:1rem; }
+        .product-manage-card {
+            background:#fafafa; border:1px solid #f0f0f0;
+            border-radius:12px; padding:12px; margin-bottom:12px;
+        }
+        .pm-top { display:flex; gap:12px; align-items:flex-start; margin-bottom:10px; }
+        .pm-thumb { width:64px; height:64px; object-fit:cover; border-radius:10px; border:2px solid #f8bbd0; flex-shrink:0; }
+        .pm-thumb-emoji {
+            width:64px; height:64px; background:linear-gradient(135deg,#fce4ec,#f8bbd0);
+            border-radius:10px; display:flex; align-items:center; justify-content:center;
+            font-size:2rem; flex-shrink:0;
+        }
+        .pm-fields { flex:1; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+        .pm-field-full { grid-column:1/-1; }
+        .pm-input {
+            padding:7px 10px; border:2px solid #f0f0f0; border-radius:8px;
+            font-size:0.82rem; width:100%; outline:none; font-family:inherit;
+        }
+        .pm-input:focus { border-color:#e91e63; }
+        .pm-textarea {
+            padding:7px 10px; border:2px solid #f0f0f0; border-radius:8px;
+            font-size:0.82rem; width:100%; outline:none; font-family:inherit;
+            resize:vertical; min-height:52px; line-height:1.4;
+        }
+        .pm-textarea:focus { border-color:#e91e63; }
+        .pm-label { font-size:0.7rem; color:#888; margin-bottom:2px; }
+        .pm-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:10px; }
+        .pm-upload {
+            display:inline-flex; align-items:center; gap:4px;
+            padding:7px 12px; background:#fce4ec;
+            border:1px dashed #e91e63; border-radius:8px; cursor:pointer;
+            font-size:0.75rem; color:#880e4f;
+        }
+        .pm-upload input { display:none; }
+        .save-btn {
+            padding:7px 14px; background:#4caf50; color:white;
+            border:none; border-radius:8px; cursor:pointer; font-size:0.78rem;
+        }
+        .delete-btn {
+            padding:7px 14px; background:#f44336; color:white;
+            border:none; border-radius:8px; cursor:pointer; font-size:0.78rem;
+        }
+        .mini-stock-bar { height:5px; background:#f0f0f0; border-radius:3px; overflow:hidden; margin-top:4px; }
+        .mini-stock-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,#e91e63,#f48fb1); }
+
+        /* FOOTER */
+        footer {
+            background:linear-gradient(135deg,#880e4f,#c2185b);
+            color:white; text-align:center; padding:24px 16px; margin-top:40px;
+        }
+        footer p { opacity:0.9; font-size:0.85rem; line-height:1.8; }
+
+        /* ── PAGE TAB NAV ── */
+        .page-tab-nav {
+            background:linear-gradient(135deg,#6a0036,#880e4f);
+            display:flex; position:sticky; top:68px; z-index:99;
+            box-shadow:0 3px 12px rgba(136,14,79,0.3);
+        }
+        .page-tab {
+            flex:1; padding:11px 10px; text-align:center; cursor:pointer;
+            color:rgba(255,255,255,0.65); font-size:0.88rem; font-weight:bold;
+            letter-spacing:1px; border-bottom:3px solid transparent;
+            transition:all 0.25s; user-select:none; -webkit-user-select:none;
+        }
+        .page-tab.active {
+            color:#fff; border-bottom:3px solid #f48fb1;
+            background:rgba(255,255,255,0.1);
+        }
+        .page-tab:active { background:rgba(255,255,255,0.15); }
+        .page-view { display:none; }
+        .page-view.active { display:block; }
+
+        /* ── DESKTOP OVERRIDES ── */
+        @media(min-width:600px) {
+            header { padding:18px 30px; }
+            .logo h1 { font-size:1.7rem; }
+            .logo-icon { width:46px; height:46px; font-size:22px; }
+            .hero { padding:50px 30px 40px; }
+            .hero h2 { font-size:2.2rem; }
+            .hero p  { font-size:1rem; }
+            .products-section { padding:30px 30px 50px; }
+            .section-title { font-size:1.7rem; }
+            .products-grid { grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:22px; }
+            .product-image-wrapper { height:200px; }
+            .product-name { font-size:1rem; }
+            .product-price { font-size:1.2rem; }
+            .admin-header { padding:18px 30px; }
+            .admin-header h2 { font-size:1.3rem; }
+            .admin-content { padding:24px 24px 50px; }
+            .form-grid-3 { grid-template-columns:1fr 1fr 1fr; }
+            .pwd-grid { grid-template-columns:1fr 1fr 1fr; }
+        }
+        @media(min-width:900px) {
+            header { padding:20px 40px; }
+            .logo h1 { font-size:2rem; }
+            .products-section { padding:40px 40px 60px; }
+            .admin-content { padding:30px 30px 60px; }
+        }
+
+        /* ══════════════════════════════════════════
+           ANIMATIONS — added on top, no logic change
+           ══════════════════════════════════════════ */
+
+        /* ── Header entrance + logo shimmer ── */
+        header {
+            animation: headerDrop 0.55s cubic-bezier(.4,0,.2,1) both;
+        }
+        @keyframes headerDrop {
+            from { transform:translateY(-100%); opacity:0; }
+            to   { transform:translateY(0);     opacity:1; }
+        }
+        .logo-icon {
+            animation: logoSpin 0.7s cubic-bezier(.34,1.56,.64,1) 0.4s both;
+        }
+        .brand-logo-frame {
+            animation: logoSpin 0.7s cubic-bezier(.34,1.56,.64,1) 0.4s both;
+        }
+        @keyframes logoSpin {
+            from { transform:scale(0) rotate(-180deg); opacity:0; }
+            to   { transform:scale(1) rotate(0deg);    opacity:1; }
+        }
+        .logo h1 {
+            background: linear-gradient(90deg,#fff 0%,#ffd6e7 40%,#fff 60%,#ffd6e7 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear 1s infinite;
+        }
+        @keyframes shimmer {
+            from { background-position: 200% center; }
+            to   { background-position: -200% center; }
+        }
+
+        /* ── Page tab nav slide-in ── */
+        .page-tab-nav {
+            animation: slideInLeft 0.5s cubic-bezier(.4,0,.2,1) 0.3s both;
+        }
+        @keyframes slideInLeft {
+            from { transform:translateX(-30px); opacity:0; }
+            to   { transform:translateX(0);     opacity:1; }
+        }
+        /* Tab active indicator animated underline */
+        .page-tab {
+            position: relative; overflow: hidden;
+        }
+        .page-tab::after {
+            content:''; position:absolute; bottom:0; left:50%;
+            width:0; height:3px;
+            background: #f48fb1; border-radius:2px;
+            transition: width 0.35s cubic-bezier(.4,0,.2,1), left 0.35s cubic-bezier(.4,0,.2,1);
+        }
+        .page-tab.active::after { width:100%; left:0; }
+
+        /* ── Page view fade + slide transition ── */
+        .page-view.active {
+            animation: pageReveal 0.4s cubic-bezier(.4,0,.2,1) both;
+        }
+        @keyframes pageReveal {
+            from { opacity:0; transform:translateY(16px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+
+        /* ── Hero text entrance ── */
+        .hero h2 {
+            animation: heroTitle 0.7s cubic-bezier(.34,1.56,.64,1) 0.2s both;
+        }
+        @keyframes heroTitle {
+            from { opacity:0; transform:translateY(24px) scale(0.95); }
+            to   { opacity:1; transform:translateY(0)    scale(1); }
+        }
+        .hero p {
+            animation: fadeUp 0.6s ease 0.4s both;
+        }
+
+        /* ── Section title underline grow ── */
+        .section-title {
+            animation: fadeUp 0.5s ease 0.3s both;
+        }
+        .section-title::after {
+            animation: lineGrow 0.6s cubic-bezier(.4,0,.2,1) 0.7s both;
+            transform-origin: left;
+        }
+        @keyframes lineGrow {
+            from { transform:scaleX(0); }
+            to   { transform:scaleX(1); }
+        }
+
+        /* ── Product cards staggered scroll-reveal ── */
+        .product-card {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.4,0,.2,1), box-shadow 0.3s;
+        }
+        .product-card.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Card hover lift */
+        .product-card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 12px 32px rgba(136,14,79,0.22);
+        }
+        .product-card:active {
+            transform: scale(0.97) !important;
+        }
+
+        /* ── Product image zoom on hover ── */
+        .product-image-wrapper img {
+            transition: transform 0.5s cubic-bezier(.4,0,.2,1);
+        }
+        .product-image-wrapper:hover img {
+            transform: scale(1.08);
+        }
+
+        /* ── Discount badge pulse ── */
+        .discount-badge {
+            animation: badgePop 0.5s cubic-bezier(.34,1.56,.64,1) both;
+        }
+        @keyframes badgePop {
+            from { transform:scale(0); opacity:0; }
+            to   { transform:scale(1); opacity:1; }
+        }
+
+        /* ── Stock bar animated fill ── */
+        .stock-bar-fill {
+            width: 0% !important;
+            animation: barFill 1s cubic-bezier(.4,0,.2,1) 0.5s forwards;
+        }
+        @keyframes barFill {
+            to { width: var(--bar-pct, 50%); }
+        }
+
+        /* ── Order info slide-down improved ── */
+        @keyframes slideDown {
+            from { opacity:0; transform:translateY(-12px) scaleY(0.9); }
+            to   { opacity:1; transform:translateY(0)     scaleY(1); }
+        }
+
+        /* ── Floating WhatsApp button enhanced ── */
+        .whatsapp-float-btn {
+            animation: waBounce 2.2s cubic-bezier(.4,0,.2,1) infinite;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        @keyframes waBounce {
+            0%,100% { transform:translateY(0); box-shadow:0 4px 20px rgba(37,211,102,0.5); }
+            50%      { transform:translateY(-8px); box-shadow:0 12px 30px rgba(37,211,102,0.65); }
+        }
+        .whatsapp-float-btn:hover {
+            animation: none;
+            transform: scale(1.12) rotate(-5deg);
+            box-shadow: 0 8px 30px rgba(37,211,102,0.7);
+        }
+        .whatsapp-float-label {
+            animation: labelPulse 2.5s ease infinite;
+        }
+        @keyframes labelPulse {
+            0%,100% { opacity:1; transform:translateX(0); }
+            50%      { opacity:0.75; transform:translateX(-3px); }
+        }
+
+        /* ── Loading screen animated dots ── */
+        .loading-text::after {
+            content: '';
+            display: inline-block;
+            animation: dots 1.4s steps(3, end) infinite;
+        }
+        @keyframes dots {
+            0%   { content: ''; }
+            33%  { content: '.'; }
+            66%  { content: '..'; }
+            100% { content: '...'; }
+        }
+        .loading-logo {
+            animation: pulse 1.2s infinite, loadFloat 2s ease-in-out infinite;
+        }
+        @keyframes loadFloat {
+            0%,100% { transform:scale(1) translateY(0); }
+            50%      { transform:scale(1.15) translateY(-6px); }
+        }
+
+        /* ── Admin panel slide-in ── */
+        .admin-panel.active {
+            animation: adminSlideIn 0.4s cubic-bezier(.4,0,.2,1) both;
+        }
+        @keyframes adminSlideIn {
+            from { transform:translateX(100%); opacity:0.5; }
+            to   { transform:translateX(0);    opacity:1; }
+        }
+
+        /* ── Login modal pop-in ── */
+        .admin-overlay.active .login-modal {
+            animation: modalPop 0.4s cubic-bezier(.34,1.56,.64,1) both;
+        }
+        @keyframes modalPop {
+            from { transform:scale(0.8) translateY(20px); opacity:0; }
+            to   { transform:scale(1)   translateY(0);    opacity:1; }
+        }
+
+        /* ── Admin cards stagger ── */
+        .admin-card {
+            animation: fadeUp 0.4s ease both;
+        }
+        .admin-card:nth-child(1) { animation-delay: 0.05s; }
+        .admin-card:nth-child(2) { animation-delay: 0.12s; }
+        .admin-card:nth-child(3) { animation-delay: 0.19s; }
+        .admin-card:nth-child(4) { animation-delay: 0.26s; }
+
+        /* ── Buttons ripple + hover ── */
+        .add-btn, .setting-btn, .login-btn, .save-btn, .delete-btn {
+            transition: transform 0.18s, box-shadow 0.18s, background 0.2s;
+            position: relative; overflow: hidden;
+        }
+        .add-btn:hover    { transform:translateY(-2px); box-shadow:0 6px 18px rgba(136,14,79,0.3); }
+        .login-btn:hover  { transform:translateY(-2px); box-shadow:0 6px 18px rgba(136,14,79,0.3); }
+        .save-btn:hover   { transform:translateY(-2px); box-shadow:0 4px 12px rgba(76,175,80,0.4); }
+        .delete-btn:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(244,67,54,0.4); }
+        .add-btn:active, .login-btn:active, .save-btn:active, .delete-btn:active {
+            transform:scale(0.96);
+        }
+
+        /* ── Shared fadeUp ── */
+        @keyframes fadeUp {
+            from { opacity:0; transform:translateY(18px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+
+        /* ── Toast enhanced ── */
+        .toast {
+            border-left: 4px solid #e91e63;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        /* ── Footer fade-in ── */
+        footer {
+            animation: fadeUp 0.6s ease 0.5s both;
+        }
+
+        /* ── Admin btn hover ── */
+        .admin-btn {
+            transition: all 0.25s cubic-bezier(.4,0,.2,1);
+        }
+        .admin-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(255,255,255,0.2);
+        }
+
+        /* ── INSTALL APP BUTTON ── */
+        .install-app-btn {
+            display: flex; /* always visible on all devices */
+            align-items: right; gap: 3px;
+            background: linear-gradient(135deg,#fff,#f994b6);
+            color: #880e4f; border: 2px solid rgba(255,255,255,0.85);
+            padding: 7px 12px; border-radius: 25px;
+            font-size: 0.76rem; font-weight: bold;
+            cursor: pointer; white-space: nowrap; flex-shrink: 0;
+            box-shadow: 0 3px 14px rgba(0,0,0,0.2);
+            transition: all 0.25s;
+            letter-spacing: 0.3px;
+            animation: installPulse 2.5s ease infinite;
+        }
+        @keyframes installPulse {
+            0%,100% { box-shadow: 0 3px 14px rgba(0,0,0,0.2); }
+            50%      { box-shadow: 0 4px 20px rgba(255,255,255,0.45); }
+        }
+        .install-app-btn:hover, .install-app-btn:active {
+            background: white; transform: translateY(-1px);
+            box-shadow: 0 5px 18px rgba(0,0,0,0.25);
+        }
+        .install-app-btn svg { flex-shrink:0; }
+        /* hide install btn only when running as installed PWA */
+        @media (display-mode: standalone) {
+            .install-app-btn { display: none !important; }
+        }
+
+        /* ── INSTALL BANNER (shown on iOS / unsupported browsers) ── */
+        .install-banner {
+            display: none;
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 997;
+            background: linear-gradient(135deg,#880e4f,#c2185b);
+            color: white; padding: 14px 18px;
+            flex-direction: column; gap: 10px;
+            box-shadow: 0 -4px 20px rgba(136,14,79,0.35);
+            animation: slideUp 0.4s cubic-bezier(.4,0,.2,1) both;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity:0; }
+            to   { transform: translateY(0);    opacity:1; }
+        }
+        .install-banner.show { display: flex; }
+        .install-banner-top { display:flex; justify-content:space-between; align-items:center; }
+        .install-banner h4 { font-size: 0.95rem; letter-spacing:1px; }
+        .install-banner p  { font-size: 0.78rem; opacity:0.85; line-height:1.5; }
+        .install-banner-close {
+            background: rgba(255,255,255,0.2); border: none; color: white;
+            width:18px; height:18px; border-radius:30%; cursor:pointer;
+            font-size:1rem; display:flex; align-items:center; justify-content:center;
+            flex-shrink:0;
+        }
+        .install-banner-actions { display:flex; gap:10px; }
+        .install-banner-btn {
+            flex:1; padding:9px; border:none; border-radius:20px;
+            font-size:0.85rem; font-weight:bold; cursor:pointer;
+        }
+        .install-banner-btn.primary { background:white; color:#880e4f; }
+        .install-banner-btn.secondary { background:rgba(255,255,255,0.15); color:white; }
+    </style>
+</head>
+<body>
+
+    
+<!-- LOADING -->
+<div id="loadingScreen">
+    <div class="loading-logo">
+        <div class="loading-logo-frame" id="loadingLogoFrame">
+            <div class="loading-logo-placeholder" id="loadingLogoPlaceholder">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            </div>
+        </div>
+    </div>
+    <div class="loading-text">AUM ENTERPRISES</div>
+    <div class="loading-sub" id="loadingMsg">Loading products from cloud...</div>
+    <div class="loading-bar-track"><div class="loading-bar-fill" id="loadingBar"></div></div>
+</div>
+
+<!-- MAIN SITE -->
+<div id="mainSite">
+    <header>
+        <div class="logo">
+            <div class="brand-logo-frame" id="headerLogoFrame">
+                <div class="brand-logo-placeholder" id="headerLogoPlaceholder">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                </div>
+            </div>
+            <div>
+                <h1>AUM ENTERPRISES</h1>
+                <p>BEAUTY & ELEGANCE</p>
+            </div>
+        </div>
+        <button class="install-app-btn" id="installBtn" onclick="triggerInstall()" title="Download App">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#880e4f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v13M8 11l4 4 4-4"/><rect x="3" y="17" width="18" height="4" rx="1"/>
+            </svg>
+            Install App
+        </button>
+        <button class="admin-btn" onclick="showLogin()">⚙ Admin</button>
+    </header>
+
+    <!-- PAGE TAB NAV -->
+    <nav class="page-tab-nav">
+        <div class="page-tab active" id="tab-cosmetics" onclick="switchPage('cosmetics')">  Naida Hussain Cosmetics</div>
+        <div class="page-tab" id="tab-wax" onclick="switchPage('wax')"> Zia Wax</div>
+    </nav>
+
+    <!-- PAGE: COSMETICS -->
+    <div class="page-view active" id="page-cosmetics">
+        <section class="hero">
+            <h2>Discover Your Beauty</h2>
+            <p>Premium cosmetics crafted with love. Enhance your natural beauty with our exclusive collection.</p>
+        </section>
+        <section class="products-section">
+            <h2 class="section-title">Our Products</h2>
+            <div class="products-grid" id="productsGrid"></div>
+        </section>
+        <footer>
+            <p>💄 AUM Enterprises — Beauty & Elegance</p>
+            <p>  2026 AUM Enterprises. </p>
+        </footer>
+    </div>
+
+    <!-- PAGE: WAX -->
+    <div class="page-view" id="page-wax">
+        <section class="hero">
+            <h2>Discover Our Wax Collection</h2>
+            <p>Premium wax products crafted with care. Smooth, effective, and long-lasting — beauty made simple.</p>
+        </section>
+        <section class="products-section">
+            <h2 class="section-title">Our Wax Products</h2>
+            <div class="products-grid" id="waxProductsGrid"></div>
+        </section>
+        <footer>
+            <p>🕯 AUM Enterprises — Smooth & Effective</p>
+            <p>  2026 AUM Enterprises.</p>
+        </footer>
+    </div>
+</div>
+
+<!-- FLOATING WHATSAPP -->
+<div class="whatsapp-float">
+    <div class="whatsapp-float-label">💬 Order on WhatsApp</div>
+    <a class="whatsapp-float-btn" id="waFloatLink" href="#" target="_blank">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L.057 23.882l6.233-1.638A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.372l-.36-.214-3.7.972.986-3.607-.234-.37A9.818 9.818 0 1 1 12 21.818z"/>
+        </svg>
+    </a>
+</div>
+
+<!-- INSTALL BANNER (iOS / fallback) -->
+<div class="install-banner" id="installBanner">
+    <div class="install-banner-top">
+        <h4>📲 Install AUM App</h4>
+        <button class="install-banner-close" onclick="closeBanner()">✕</button>
+    </div>
+    <p id="installBannerMsg">Add this website to your home screen for instant access — works like a real app, always shows your latest products!</p>
+    <div class="install-banner-actions">
+        <button class="install-banner-btn primary" id="installBannerBtn" onclick="triggerInstall()">⬇ Install Now</button>
+        <button class="install-banner-btn secondary" onclick="closeBanner()">Maybe Later</button>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- LOGIN MODAL -->
+<div class="admin-overlay" id="loginOverlay">
+    <div class="login-modal">
+        <div style="font-size:2.5rem;margin-bottom:12px;">🔐</div>
+        <h2>Admin Login</h2>
+        <p>Enter your password to access the admin panel</p>
+        <p class="error-msg" id="errorMsg">❌ Incorrect password. Try again.</p>
+        <input type="password" id="passwordInput" placeholder="Enter Password" onkeypress="handleKeyPress(event)">
+        <button class="login-btn" onclick="checkPassword()">Login</button>
+        <button class="cancel-btn" onclick="hideLogin()">Cancel</button>
+    </div>
+</div>
+
+<!-- WAX LOGIN MODAL -->
+<div class="admin-overlay" id="waxLoginOverlay">
+    <div class="login-modal">
+        <div style="font-size:2.5rem;margin-bottom:12px;">🔐</div>
+        <h2>Wax Admin Login</h2>
+        <p>Enter your password to access the wax admin panel</p>
+        <p class="error-msg" id="waxErrorMsg">❌ Incorrect password. Try again.</p>
+        <input type="password" id="waxPasswordInput" placeholder="Enter Password" onkeypress="waxHandleKeyPress(event)">
+        <button class="login-btn" onclick="waxCheckPassword()">Login</button>
+        <button class="cancel-btn" onclick="waxHideLogin()">Cancel</button>
+    </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-panel" id="adminPanel">
+    <div class="admin-header">
+        <h2>⚙ AUM Enterprises Admin Panel</h2>
+        <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+    </div>
+
+    <div class="admin-content">
+
+        <!-- Sync status -->
+        <div class="sync-bar">
+            <div class="sync-dot" id="syncDot"></div>
+            <span class="sync-text" id="syncText">✅ Connected to Supabase cloud</span>
+        </div>
+
+        <!-- Brand Logo -->
+        <div class="admin-card">
+            <h3>🖼 Brand Logo</h3>
+            <p style="font-size:0.8rem;color:#777;margin-bottom:14px;">Upload your logo — it appears in the round frame on the top-left header. Recommended: square image (PNG/JPG).</p>
+            <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+                <div style="position:relative;">
+                    <div id="adminLogoPreview" style="width:72px;height:72px;border-radius:50%;border:3px solid #e91e63;box-shadow:0 3px 12px rgba(136,14,79,0.2);overflow:hidden;background:linear-gradient(135deg,#fce4ec,#f8bbd0);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <svg viewBox="0 0 24 24" style="width:30px;height:30px;fill:#c2185b;opacity:0.5;" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                    </div>
+                </div>
+                <div style="flex:1;min-width:180px;">
+                    <label class="image-upload-label" id="logoUploadLabel" style="margin-bottom:10px;">
+                        <span style="font-size:1.5rem;">📷</span>
+                        <span style="font-size:0.82rem;">Tap to upload logo</span>
+                        <span style="font-size:0.7rem;color:#aaa;">PNG, JPG, WEBP — auto compressed</span>
+                        <input type="file" accept="image/*" onchange="handleLogoUpload(event)" style="display:none;">
+                    </label>
+                    <div style="display:flex;gap:8px;">
+                        <button class="setting-btn btn-pink" style="flex:1;" onclick="saveLogo()">☁️ Save Logo</button>
+                        <button class="setting-btn btn-orange" onclick="removeLogo()">🗑 Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WhatsApp Number -->
+        <div class="admin-card">
+            <h3>📱 WhatsApp Number</h3>
+            <div class="setting-row">
+                <input type="tel" id="waNumberInput" placeholder="e.g. 923325374732 (no + sign)">
+                <button class="setting-btn btn-green" onclick="saveWhatsApp()">☁️ Save</button>
+            </div>
+        </div>
+
+        <!-- Change Password -->
+        <div class="admin-card">
+            <h3>🔑 Change Login Password</h3>
+            <p class="pwd-note">Enter current password, then your new password twice to confirm.</p>
+            <div class="pwd-grid">
+                <input type="password" id="pwdCurrent" placeholder="Current password">
+                <input type="password" id="pwdNew"     placeholder="New password">
+                <input type="password" id="pwdConfirm" placeholder="Confirm new password">
+            </div>
+            <button class="setting-btn btn-pink" style="width:100%;padding:11px;" onclick="changePassword()">🔒 Change Password</button>
+        </div>
+
+        <!-- Add Product -->
+        <div class="admin-card">
+            <h3>➕ Add New Product</h3>
+            <div class="form-grid-3">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="newName" placeholder="e.g. Rose Lip Gloss">
+                </div>
+                <div class="form-group">
+                    <label>Price (PKR)</label>
+                    <input type="number" id="newPrice" placeholder="e.g. 850">
+                </div>
+                <div class="form-group">
+                    <label>Discount %</label>
+                    <input type="number" id="newDiscount" placeholder="0" min="0" max="90">
+                </div>
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+                <label>Product Description (2 lines shown to customers)</label>
+                <textarea id="newDesc" placeholder="e.g. Long-lasting matte finish. Enriched with vitamin E for soft lips." maxlength="150"></textarea>
+            </div>
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label>Total Stock</label>
+                    <input type="number" id="newStock" placeholder="e.g. 100" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Units Sold</label>
+                    <input type="number" id="newSold" placeholder="e.g. 30" min="0">
+                </div>
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+                <label>Fallback Icon (if no image)</label>
+                <select id="newIcon">
+                    <option value="💄">💄 Lipstick</option>
+                    <option value="💅">💅 Nail Polish</option>
+                    <option value="🧴">🧴 Skincare</option>
+                    <option value="👁️">👁️ Eye Makeup</option>
+                    <option value="🌸">🌸 Perfume</option>
+                    <option value="✨">✨ Highlighter</option>
+                    <option value="🫧">🫧 Cleanser</option>
+                    <option value="🧖">🧖 Mask</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom:14px;">
+                <label>Product Image (optional)</label>
+                <label class="image-upload-label" id="uploadLabel">
+                    <span style="font-size:1.8rem;">📷</span>
+                    <span>Tap to upload product image</span>
+                    <span style="font-size:0.72rem;color:#aaa;">JPG, PNG, WEBP — auto compressed</span>
+                    <input type="file" accept="image/*" onchange="previewNewImage(event)">
+                </label>
+            </div>
+            <button class="add-btn" onclick="addProduct()">☁️ Add & Save to Cloud</button>
+        </div>
+
+        <!-- Manage Products -->
+        <div class="admin-card products-manage">
+            <h3>📦 Manage Products</h3>
+            <div id="adminCards"></div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ADMIN PANEL: WAX -->
+<div class="admin-panel" id="waxAdminPanel">
+    <div class="admin-header">
+        <h2>⚙ AUM Enterprises Admin Panel</h2>
+        <button class="logout-btn" onclick="waxLogout()">🚪 Logout</button>
+    </div>
+
+    <div class="admin-content">
+
+        <!-- Sync status -->
+        <div class="sync-bar">
+            <div class="sync-dot" id="waxSyncDot"></div>
+            <span class="sync-text" id="waxSyncText">✅ Connected to Supabase cloud</span>
+        </div>
+
+        <!-- WhatsApp Number -->
+        <div class="admin-card">
+            <h3>📱 WhatsApp Number (Wax)</h3>
+            <div class="setting-row">
+                <input type="tel" id="waxWaNumberInput" placeholder="e.g. 923325374732 (no + sign)">
+                <button class="setting-btn btn-green" onclick="waxSaveWhatsApp()">☁️ Save</button>
+            </div>
+        </div>
+
+        <!-- Change Password -->
+        <div class="admin-card">
+            <h3>🔑 Change Login Password</h3>
+            <p class="pwd-note">Enter current password, then your new password twice to confirm.</p>
+            <div class="pwd-grid">
+                <input type="password" id="waxPwdCurrent" placeholder="Current password">
+                <input type="password" id="waxPwdNew"     placeholder="New password">
+                <input type="password" id="waxPwdConfirm" placeholder="Confirm new password">
+            </div>
+            <button class="setting-btn btn-pink" style="width:100%;padding:11px;" onclick="waxChangePassword()">🔒 Change Password</button>
+        </div>
+
+        <!-- Add Product -->
+        <div class="admin-card">
+            <h3>➕ Add New Wax Product</h3>
+            <div class="form-grid-3">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="waxNewName" placeholder="e.g. Honey Wax Strip">
+                </div>
+                <div class="form-group">
+                    <label>Price (PKR)</label>
+                    <input type="number" id="waxNewPrice" placeholder="e.g. 850">
+                </div>
+                <div class="form-group">
+                    <label>Discount %</label>
+                    <input type="number" id="waxNewDiscount" placeholder="0" min="0" max="90">
+                </div>
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+                <label>Product Description (2 lines shown to customers)</label>
+                <textarea id="waxNewDesc" placeholder="e.g. Smooth honey wax for gentle hair removal." maxlength="150"></textarea>
+            </div>
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label>Total Stock</label>
+                    <input type="number" id="waxNewStock" placeholder="e.g. 100" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Units Sold</label>
+                    <input type="number" id="waxNewSold" placeholder="e.g. 30" min="0">
+                </div>
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+                <label>Fallback Icon (if no image)</label>
+                <select id="waxNewIcon">
+                    <option value="🕯">🕯 Wax Candle</option>
+                    <option value="🍯">🍯 Honey Wax</option>
+                    <option value="🧴">🧴 Wax Lotion</option>
+                    <option value="✨">✨ Glitter Wax</option>
+                    <option value="🌸">🌸 Rose Wax</option>
+                    <option value="❄️">❄️ Cool Wax</option>
+                    <option value="🌿">🌿 Natural Wax</option>
+                    <option value="💎">💎 Premium Wax</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom:14px;">
+                <label>Product Image (optional)</label>
+                <label class="image-upload-label" id="waxUploadLabel">
+                    <span style="font-size:1.8rem;">📷</span>
+                    <span>Tap to upload product image</span>
+                    <span style="font-size:0.72rem;color:#aaa;">JPG, PNG, WEBP — auto compressed</span>
+                    <input type="file" accept="image/*" onchange="waxPreviewNewImage(event)">
+                </label>
+            </div>
+            <button class="add-btn" onclick="waxAddProduct()">☁️ Add & Save to Cloud</button>
+        </div>
+
+        <!-- Manage Products -->
+        <div class="admin-card products-manage">
+            <h3>📦 Manage Wax Products</h3>
+            <div id="waxAdminCards"></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // ═══════════════════════════════════════════════
+    //  Page Switching
+    // ═══════════════════════════════════════════════
+    let currentPage = 'cosmetics';
+    function switchPage(page) {
+        currentPage = page;
+        document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
+        document.getElementById('tab-' + page).classList.add('active');
+        document.getElementById('page-' + page).classList.add('active');
+        if (page === 'wax') waxUpdateFloatBtn(); else updateFloatBtn();
+    }
+
+    // ═══════════════════════════════════════════════
+    //  Supabase config
+    // ═══════════════════════════════════════════════
+    const SB_URL  = 'https://rahskphzgzmjiqxkhism.supabase.co/rest/v1/store';
+    const SB_KEY  = 'sb_publishable_-wg-IbSFHygcFDVmMa_MFw_ppJIAbFN';
+    const SB_HEAD = {
+        'Content-Type'  : 'application/json',
+        'apikey'        : SB_KEY,
+        'Authorization' : 'Bearer ' + SB_KEY
+    };
+
+    // ═══════════════════════════════════════════════
+    //  Default data
+    // ═══════════════════════════════════════════════
+    const DEFAULT_DATA = {
+        whatsapp : '923325374732',
+        password : '1234',
+        nextId   : 9,
+        products : [
+            { id:1, name:'Velvet Rose Lipstick',  price:950,  icon:'💄', description:'Long-lasting matte finish. Enriched with vitamin E for soft, smooth lips.',      image:null, discount:0,  stock:100, sold:20 },
+            { id:2, name:'Glow Serum',             price:1800, icon:'🧴', description:'Vitamin C brightening formula. Fades dark spots and gives radiant skin.',       image:null, discount:10, stock:80,  sold:45 },
+            { id:3, name:'Crystal Nail Polish',    price:450,  icon:'💅', description:'Chip-resistant glossy finish. Lasts up to 10 days without fading.',             image:null, discount:0,  stock:150, sold:60 },
+            { id:4, name:'Smoky Eye Palette',      price:1200, icon:'👁️', description:'12 rich pigmented shades. Blendable formula for day and night looks.',          image:null, discount:15, stock:60,  sold:30 },
+            { id:5, name:'Midnight Bloom Perfume', price:2500, icon:'🌸', description:'Floral and musky fragrance. Long-lasting scent that lasts all day.',            image:null, discount:0,  stock:40,  sold:10 },
+            { id:6, name:'Diamond Highlighter',    price:750,  icon:'✨', description:'Blinding shimmer for glowing skin. Buildable formula for subtle to bold glow.',  image:null, discount:5,  stock:90,  sold:55 },
+            { id:7, name:'Hydra Foam Cleanser',    price:680,  icon:'🫧', description:'Gentle daily face wash. Removes impurities without drying your skin.',           image:null, discount:0,  stock:120, sold:40 },
+            { id:8, name:'Charcoal Face Mask',     price:550,  icon:'🧖', description:'Deep pore cleansing mask. Removes blackheads and excess oil in minutes.',        image:null, discount:20, stock:70,  sold:50 }
+        ]
+    };
+
+    // ═══════════════════════════════════════════════
+    //  State
+    // ═══════════════════════════════════════════════
+    let products     = [];
+    let WHATSAPP_NUM = '923325374732';
+    let ADMIN_PASS   = '1234';
+    let nextId       = 9;
+    let newImageData = null;
+    let isSaving     = false;
+    let BRAND_LOGO   = 'data:image/jpeg;base64,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';
+
+    // ═══════════════════════════════════════════════
+    //  Cloud: READ
+    // ═══════════════════════════════════════════════
+    async function loadFromCloud() {
+        setLoading(30, 'Connecting to Supabase cloud...');
+        try {
+            const res  = await fetch(SB_URL + '?key=eq.amu_data&select=value', { headers: SB_HEAD });
+            if (!res.ok) throw new Error('Fetch failed ' + res.status);
+            const rows = await res.json();
+            setLoading(75, 'Loading your products...');
+            if (rows && rows.length > 0) {
+                const data   = JSON.parse(rows[0].value);
+                products     = data.products    || DEFAULT_DATA.products;
+                WHATSAPP_NUM = data.whatsapp    || DEFAULT_DATA.whatsapp;
+                ADMIN_PASS   = data.password    || DEFAULT_DATA.password;
+                nextId       = data.nextId      || 9;
+                // Load wax data from same record
+                waxProducts    = data.waxProducts    || WAX_DEFAULT_DATA.products;
+                WAX_WHATSAPP   = data.waxWhatsapp    || WAX_DEFAULT_DATA.whatsapp;
+                WAX_ADMIN_PASS = data.waxPassword    || WAX_DEFAULT_DATA.password;
+                waxNextId      = data.waxNextId      || WAX_DEFAULT_DATA.nextId;
+                BRAND_LOGO     = data.brandLogo      || null;
+                if (BRAND_LOGO) applyLogoToHeader(BRAND_LOGO);
+            } else {
+                products       = DEFAULT_DATA.products;
+                WHATSAPP_NUM   = DEFAULT_DATA.whatsapp;
+                ADMIN_PASS     = DEFAULT_DATA.password;
+                nextId         = DEFAULT_DATA.nextId;
+                waxProducts    = WAX_DEFAULT_DATA.products;
+                WAX_WHATSAPP   = WAX_DEFAULT_DATA.whatsapp;
+                WAX_ADMIN_PASS = WAX_DEFAULT_DATA.password;
+                waxNextId      = WAX_DEFAULT_DATA.nextId;
+                await saveToCloud();
+            }
+            // Always apply logo (cloud logo overrides embedded default)
+            if (BRAND_LOGO) applyLogoToHeader(BRAND_LOGO);
+            setLoading(100, 'Done!');
+            setSyncStatus('connected');
+            waxSetSyncStatus('connected');
+        } catch(err) {
+            console.error(err);
+            products       = DEFAULT_DATA.products;
+            WHATSAPP_NUM   = DEFAULT_DATA.whatsapp;
+            ADMIN_PASS     = DEFAULT_DATA.password;
+            nextId         = DEFAULT_DATA.nextId;
+            waxProducts    = WAX_DEFAULT_DATA.products;
+            WAX_WHATSAPP   = WAX_DEFAULT_DATA.whatsapp;
+            WAX_ADMIN_PASS = WAX_DEFAULT_DATA.password;
+            waxNextId      = WAX_DEFAULT_DATA.nextId;
+            setLoading(100, 'Loaded offline');
+            setSyncStatus('error');
+            waxSetSyncStatus('error');
+            showToast('Could not reach cloud. Showing default products.');
+        } finally {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.display = 'none';
+                updateFloatBtn();
+                renderProducts();
+                waxRenderProducts();
+            }, 500);
+        }
+    }
+
+    // ═══════════════════════════════════════════════
+    //  Cloud: WRITE
+    // ═══════════════════════════════════════════════
+    async function saveToCloud() {
+        if (isSaving) return;
+        isSaving = true;
+        setSyncStatus('syncing');
+        try {
+            const body = JSON.stringify([{ key:'amu_data', value: JSON.stringify({
+                products, whatsapp:WHATSAPP_NUM, password:ADMIN_PASS, nextId,
+                waxProducts, waxWhatsapp:WAX_WHATSAPP, waxPassword:WAX_ADMIN_PASS, waxNextId,
+                brandLogo: BRAND_LOGO
+            }) }]);
+            const res  = await fetch(SB_URL, {
+                method  : 'POST',
+                headers : { ...SB_HEAD, 'Prefer':'resolution=merge-duplicates' },
+                body    : body
+            });
+            if (!res.ok && res.status !== 204) throw new Error('Save failed ' + res.status);
+            setSyncStatus('connected');
+            waxSetSyncStatus('connected');
+        } catch(err) {
+            console.error(err);
+            setSyncStatus('error');
+            waxSetSyncStatus('error');
+            showToast('Cloud save failed. Check internet connection.');
+        } finally {
+            isSaving = false;
+        }
+    }
+
+    // ═══════════════════════════════════════════════
+    //  UI Helpers
+    // ═══════════════════════════════════════════════
+    function setLoading(pct, msg) {
+        document.getElementById('loadingBar').style.width = pct + '%';
+        document.getElementById('loadingMsg').textContent = msg;
+    }
+    function setSyncStatus(state) {
+        const dot  = document.getElementById('syncDot');
+        const text = document.getElementById('syncText');
+        if (!dot) return;
+        dot.className = 'sync-dot' + (state==='syncing' ? ' syncing' : state==='error' ? ' error' : '');
+        if (state==='connected') text.textContent = '✅ Connected to Supabase — changes save instantly';
+        if (state==='syncing')   text.textContent = '🔄 Saving to cloud...';
+        if (state==='error')     text.textContent = '❌ Cloud error — check internet or Supabase table';
+    }
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3500);
+    }
+    function discountedPrice(price, discount) {
+        if (!discount || discount <= 0) return price;
+        return Math.round(price * (1 - discount / 100));
+    }
+    function soldPercent(stock, sold) {
+        if (!stock || stock <= 0) return 0;
+        return Math.min(100, Math.round((sold / stock) * 100));
+    }
+    function stockBarClass(pct) {
+        return pct >= 70 ? 'high' : pct >= 35 ? 'medium' : 'low';
+    }
+    function updateFloatBtn() {
+        document.getElementById('waFloatLink').href =
+            'https://wa.me/' + WHATSAPP_NUM + '?text=Hi!%20I%20want%20to%20place%20an%20order%20from%20AUM%20Enterprises.';
+    }
+
+    // ═══════════════════════════════════════════════
+    //  Image Compressor (300KB target for Supabase)
+    // ═══════════════════════════════════════════════
+    function compressImage(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onerror = () => reject(new Error('Cannot read file'));
+            reader.onload  = e => {
+                const img = new Image();
+                img.onerror = () => reject(new Error('Cannot load image'));
+                img.onload  = () => {
+                    const MAX = 800;
+                    let w = img.width, h = img.height;
+                    if (w > MAX || h > MAX) {
+                        if (w >= h) { h = Math.round(h*MAX/w); w = MAX; }
+                        else        { w = Math.round(w*MAX/h); h = MAX; }
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    const TARGET = 300 * 1024 * 1.37;
+                    let q = 0.85, dataURL = canvas.toDataURL('image/jpeg', q);
+                    while (dataURL.length > TARGET && q > 0.2) { q -= 0.05; dataURL = canvas.toDataURL('image/jpeg', q); }
+                    resolve(dataURL);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // ═══════════════════════════════════════════════
+    //  BRAND LOGO MANAGEMENT
+    // ═══════════════════════════════════════════════
+    function applyLogoToHeader(dataUrl) {
+        // ── Header logo ──
+        const frame       = document.getElementById('headerLogoFrame');
+        const placeholder = document.getElementById('headerLogoPlaceholder');
+        if (frame) {
+            const oldHeader = frame.querySelector('img');
+            if (oldHeader) oldHeader.remove();
+            if (dataUrl) {
+                const img = document.createElement('img');
+                img.src = dataUrl; img.alt = 'Brand Logo';
+                img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
+                if (placeholder) placeholder.style.display = 'none';
+                frame.appendChild(img);
+            } else {
+                if (placeholder) placeholder.style.display = 'flex';
+            }
+        }
+
+        // ── Loading screen logo (same image, stays in DOM after hide) ──
+        const loadFrame       = document.getElementById('loadingLogoFrame');
+        const loadPlaceholder = document.getElementById('loadingLogoPlaceholder');
+        if (loadFrame) {
+            const oldLoad = loadFrame.querySelector('img');
+            if (oldLoad) oldLoad.remove();
+            if (dataUrl) {
+                const img2 = document.createElement('img');
+                img2.src = dataUrl; img2.alt = 'Brand Logo';
+                img2.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
+                if (loadPlaceholder) loadPlaceholder.style.display = 'none';
+                loadFrame.appendChild(img2);
+            } else {
+                if (loadPlaceholder) loadPlaceholder.style.display = 'flex';
+            }
+        }
+    }
+
+    async function handleLogoUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const label = document.getElementById('logoUploadLabel');
+        label.innerHTML = '<span style="font-size:1.4rem;">⏳</span><span style="font-size:0.82rem;color:#880e4f;">Compressing...</span><input type="file" accept="image/*" onchange="handleLogoUpload(event)" style="display:none;">';
+        try {
+            const data = await compressImage(file);
+            BRAND_LOGO = data;
+            // Update admin preview
+            const preview = document.getElementById('adminLogoPreview');
+            preview.innerHTML = '<img src="' + data + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+            // Update header live
+            applyLogoToHeader(data);
+            label.innerHTML = '<img src="' + data + '" style="width:60px;height:60px;object-fit:cover;border-radius:50%;border:2px solid #f48fb1;"><span style="font-size:0.78rem;color:#4caf50;">✅ Ready — tap Save Logo</span><input type="file" accept="image/*" onchange="handleLogoUpload(event)" style="display:none;">';
+        } catch(err) {
+            BRAND_LOGO = null;
+            label.innerHTML = '<span style="font-size:1.4rem;">❌</span><span style="font-size:0.78rem;color:#f44336;">Error. Try another file.</span><input type="file" accept="image/*" onchange="handleLogoUpload(event)" style="display:none;">';
+        }
+    }
+
+    async function saveLogo() {
+        await saveToCloud();
+        showToast('✅ Logo saved to cloud!');
+    }
+
+    async function removeLogo() {
+        BRAND_LOGO = null;
+        applyLogoToHeader(null);
+        const preview = document.getElementById('adminLogoPreview');
+        preview.innerHTML = '<svg viewBox="0 0 24 24" style="width:30px;height:30px;fill:#c2185b;opacity:0.5;" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>';
+        const label = document.getElementById('logoUploadLabel');
+        label.innerHTML = '<span style="font-size:1.5rem;">📷</span><span style="font-size:0.82rem;">Tap to upload logo</span><span style="font-size:0.7rem;color:#aaa;">PNG, JPG, WEBP — auto compressed</span><input type="file" accept="image/*" onchange="handleLogoUpload(event)" style="display:none;">';
+        await saveToCloud();
+        showToast('🗑 Logo removed');
+    }
+
+    function syncAdminLogoPreview() {
+        if (!BRAND_LOGO) return;
+        const preview = document.getElementById('adminLogoPreview');
+        if (preview) preview.innerHTML = '<img src="' + BRAND_LOGO + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+        const label = document.getElementById('logoUploadLabel');
+        if (label) label.innerHTML = '<img src="' + BRAND_LOGO + '" style="width:60px;height:60px;object-fit:cover;border-radius:50%;border:2px solid #f48fb1;"><span style="font-size:0.78rem;color:#4caf50;">✅ Logo loaded — tap to change</span><input type="file" accept="image/*" onchange="handleLogoUpload(event)" style="display:none;">';
+    }
+
+
+    async function previewNewImage(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const label = document.getElementById('uploadLabel');
+        label.innerHTML = '<span style="font-size:1.4rem;">⏳</span><span style="font-size:0.82rem;color:#880e4f;">Compressing...</span><input type="file" accept="image/*" onchange="previewNewImage(event)">';
+        try {
+            newImageData = await compressImage(file);
+            label.innerHTML = '<img src="' + newImageData + '" style="width:70px;height:70px;object-fit:cover;border-radius:10px;border:2px solid #f48fb1;"><span style="font-size:0.78rem;color:#4caf50;">✅ Ready — tap to change</span><input type="file" accept="image/*" onchange="previewNewImage(event)">';
+        } catch(err) {
+            newImageData = null;
+            label.innerHTML = '<span style="font-size:1.4rem;">❌</span><span style="font-size:0.78rem;color:#f44336;">Error. Try another file.</span><input type="file" accept="image/*" onchange="previewNewImage(event)">';
+        }
+    }
+
+    // ═══════════════════════════════════════════════
+    //  Render customer grid
+    // ═══════════════════════════════════════════════
+    function renderProducts() {
+        const grid = document.getElementById('productsGrid');
+        grid.innerHTML = '';
+        if (!products.length) {
+            grid.innerHTML = '<p style="text-align:center;color:#888;grid-column:1/-1;padding:30px;font-size:0.9rem;">No products yet. Add from admin panel.</p>';
+            return;
+        }
+        const waIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L.057 23.882l6.233-1.638A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.372l-.36-.214-3.7.972.986-3.607-.234-.37A9.818 9.818 0 1 1 12 21.818z"/></svg>';
+
+        products.forEach(p => {
+            const imgHTML   = p.image ? '<img src="' + p.image + '" alt="' + p.name + '">' : '<div class="product-emoji-placeholder">' + p.icon + '</div>';
+            const disc      = p.discount || 0;
+            const finalP    = discountedPrice(p.price, disc);
+            const stock     = p.stock || 0;
+            const sold      = p.sold  || 0;
+            const pct       = soldPercent(stock, sold);
+            const remaining = Math.max(0, stock - sold);
+            const discBadge  = disc > 0 ? '<div class="discount-badge">🏷 ' + disc + '% OFF</div>' : '';
+            const stockBadge = remaining <= 0 ? '<div class="out-of-stock-badge">❌ Out of Stock</div>' : '';
+            const priceHTML  = disc > 0
+                ? '<div class="product-price-original">PKR ' + Number(p.price).toLocaleString() + '</div><div class="product-price">PKR ' + Number(finalP).toLocaleString() + '</div>'
+                : '<div class="product-price">PKR ' + Number(p.price).toLocaleString() + '</div>';
+            const stockBarHTML = stock > 0
+                ? '<div class="stock-bar-wrapper"><div class="stock-bar-label"><span>🛍 ' + pct + '% Sold</span><span>📦 ' + remaining + ' left</span></div><div class="stock-bar-track"><div class="stock-bar-fill ' + stockBarClass(pct) + '" style="width:' + pct + '%"></div></div></div>'
+                : '';
+            const orderBtn = remaining <= 0
+                ? '<div style="text-align:center;color:#aaa;font-size:0.78rem;padding:6px;">❌ Out of Stock</div>'
+                : '<a class="whatsapp-link" href="https://wa.me/' + WHATSAPP_NUM + '?text=Hi!%20I%20want%20to%20order%20*' + encodeURIComponent(p.name) + '*%20(PKR%20' + finalP + ')" target="_blank">' + waIcon + ' Order via WhatsApp</a>';
+
+            grid.innerHTML +=
+                '<div class="product-card" id="card-' + p.id + '">' +
+                discBadge + stockBadge +
+                '<div class="product-image-wrapper" onclick="toggleOrder(' + p.id + ')">' + imgHTML + '<span class="click-hint">👆 Tap to order</span></div>' +
+                '<div class="product-info">' +
+                '<div class="product-name">' + p.name + '</div>' +
+                '<div class="product-description">' + (p.description || '') + '</div>' +
+                priceHTML + stockBarHTML +
+                '<div class="order-info" id="order-' + p.id + '"><p>📦 To Order This Product:</p><div class="owner-name">👤 Muddsar</div>' + orderBtn + '</div>' +
+                '</div></div>';
+        });
+    }
+
+    function toggleOrder(id) {
+        document.querySelectorAll('.order-info').forEach(el => {
+            if (el.id !== 'order-' + id) el.classList.remove('visible');
+        });
+        document.getElementById('order-' + id).classList.toggle('visible');
+    }
+
+    // ═══════════════════════════════════════════════
+    //  Render admin product cards (mobile friendly)
+    // ═══════════════════════════════════════════════
+    function renderAdminTable() {
+        document.getElementById('waNumberInput').value = WHATSAPP_NUM;
+        const container = document.getElementById('adminCards');
+        container.innerHTML = '';
+        if (!products.length) {
+            container.innerHTML = '<p style="text-align:center;color:#888;padding:20px;font-size:0.85rem;">No products yet.</p>';
+            return;
+        }
+        products.forEach((p, index) => {
+            const thumbHTML = p.image
+                ? '<img class="pm-thumb" src="' + p.image + '" alt="' + p.name + '">'
+                : '<div class="pm-thumb-emoji">' + p.icon + '</div>';
+            const disc  = p.discount || 0;
+            const stock = p.stock    || 0;
+            const sold  = p.sold     || 0;
+            const pct   = soldPercent(stock, sold);
+            const desc  = (p.description || '').replace(/"/g, '&quot;');
+
+            container.innerHTML +=
+                '<div class="product-manage-card" id="pmcard-' + p.id + '">' +
+                '<div style="font-size:0.7rem;color:#aaa;margin-bottom:6px;">Product #' + (index+1) + '</div>' +
+                '<div class="pm-top">' +
+                '<div id="pmthumb-' + p.id + '">' + thumbHTML + '</div>' +
+                '<div class="pm-fields">' +
+                '<div class="form-group pm-field-full"><div class="pm-label">Product Name</div><input class="pm-input" id="pmname-' + p.id + '" value="' + p.name.replace(/"/g,'&quot;') + '" placeholder="Product name"></div>' +
+                '<div class="form-group"><div class="pm-label">Price (PKR)</div><input class="pm-input" id="pmprice-' + p.id + '" type="number" value="' + p.price + '"></div>' +
+                '<div class="form-group"><div class="pm-label">Discount %</div><input class="pm-input" id="pmdisc-' + p.id + '" type="number" value="' + disc + '" min="0" max="90"></div>' +
+                '<div class="form-group"><div class="pm-label">Stock</div><input class="pm-input" id="pmstock-' + p.id + '" type="number" value="' + stock + '" min="0"></div>' +
+                '<div class="form-group"><div class="pm-label">Sold</div><input class="pm-input" id="pmsold-' + p.id + '" type="number" value="' + sold + '" min="0"></div>' +
+                '</div></div>' +
+                '<div class="form-group" style="margin-bottom:10px;"><div class="pm-label">Description (shown under product name)</div><textarea class="pm-textarea" id="pmdesc-' + p.id + '" maxlength="150" placeholder="Write 1-2 lines about this product...">' + (p.description || '') + '</textarea></div>' +
+                '<div class="mini-stock-bar"><div class="mini-stock-fill" style="width:' + pct + '%"></div></div>' +
+                '<div style="font-size:0.7rem;color:#888;margin-top:3px;margin-bottom:10px;">' + pct + '% sold · ' + Math.max(0,stock-sold) + ' remaining</div>' +
+                '<div class="pm-actions">' +
+                '<label class="pm-upload">📷 Change Image<input type="file" accept="image/*" onchange="changePmImage(event,' + p.id + ')"></label>' +
+                '<button class="save-btn" onclick="saveProduct(' + p.id + ')">☁️ Save</button>' +
+                '<button class="delete-btn" onclick="deleteProduct(' + p.id + ')">🗑 Delete</button>' +
+                '</div>' +
+                '</div>';
+        });
+    }
+
+    // ═══════════════════════════════════════════════
+    //  Admin Actions
+    // ═══════════════════════════════════════════════
+    async function saveWhatsApp() {
+        const val = document.getElementById('waNumberInput').value.trim().replace(/\D/g,'');
+        if (!val || val.length < 10) { showToast('Please enter a valid number e.g. 923325374732'); return; }
+        WHATSAPP_NUM = val;
+        updateFloatBtn();
+        await saveToCloud();
+        showToast('✅ WhatsApp number saved!');
+    }
+
+    async function changePassword() {
+        const cur     = document.getElementById('pwdCurrent').value;
+        const nw      = document.getElementById('pwdNew').value.trim();
+        const confirm = document.getElementById('pwdConfirm').value.trim();
+        if (cur !== ADMIN_PASS) { showToast('❌ Current password is incorrect!'); return; }
+        if (!nw || nw.length < 4) { showToast('❌ New password must be at least 4 characters!'); return; }
+        if (nw !== confirm) { showToast('❌ New passwords do not match!'); return; }
+        ADMIN_PASS = nw;
+        document.getElementById('pwdCurrent').value = '';
+        document.getElementById('pwdNew').value     = '';
+        document.getElementById('pwdConfirm').value = '';
+        await saveToCloud();
+        showToast('✅ Password changed successfully!');
+    }
+
+    async function changePmImage(event, id) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const thumbCell = document.getElementById('pmthumb-' + id);
+        thumbCell.innerHTML = '<div class="pm-thumb-emoji" style="font-size:0.85rem;color:#880e4f;">⏳</div>';
+        try {
+            const data    = await compressImage(file);
+            const product = products.find(p => p.id === id);
+            if (product) {
+                product.image = data;
+                thumbCell.innerHTML = '<img class="pm-thumb" src="' + data + '" alt="' + product.name + '">';
+                showToast('✅ Image ready — tap ☁️ Save to upload');
+            }
+        } catch(err) {
+            thumbCell.innerHTML = '<div class="pm-thumb-emoji">❌</div>';
+            showToast('Could not process image. Try another file.');
+        }
+    }
+
+    async function saveProduct(id) {
+        const product = products.find(p => p.id === id);
+        if (!product) return;
+        product.name        = document.getElementById('pmname-'  + id).value.trim() || product.name;
+        product.price       = parseFloat(document.getElementById('pmprice-' + id).value) || product.price;
+        product.discount    = parseFloat(document.getElementById('pmdisc-'  + id).value) || 0;
+        product.stock       = parseInt(document.getElementById('pmstock-' + id).value)   || 0;
+        product.sold        = parseInt(document.getElementById('pmsold-'  + id).value)   || 0;
+        product.description = document.getElementById('pmdesc-'  + id).value.trim();
+        if (product.sold > product.stock) product.sold = product.stock;
+        await saveToCloud();
+        renderProducts();
+        renderAdminTable();
+        showToast('✅ Product saved to cloud!');
+    }
+
+    async function deleteProduct(id) {
+        if (!confirm('Delete this product?')) return;
+        products = products.filter(p => p.id !== id);
+        await saveToCloud();
+        renderProducts();
+        renderAdminTable();
+        showToast('🗑 Product deleted!');
+    }
+
+    async function addProduct() {
+        const name = document.getElementById('newName').value.trim();
+        const price = parseFloat(document.getElementById('newPrice').value);
+        if (!name || !price) { showToast('Please fill in product name and price!'); return; }
+        const discount = parseFloat(document.getElementById('newDiscount').value) || 0;
+        const desc     = document.getElementById('newDesc').value.trim();
+        const stock    = parseInt(document.getElementById('newStock').value)      || 0;
+        const sold     = parseInt(document.getElementById('newSold').value)       || 0;
+        const icon     = document.getElementById('newIcon').value;
+        products.push({ id:nextId++, name, price, icon, description:desc, image:newImageData||null, discount, stock, sold:Math.min(sold,stock) });
+        // reset form
+        ['newName','newPrice','newDiscount','newDesc','newStock','newSold'].forEach(id => document.getElementById(id).value = '');
+        newImageData = null;
+        document.getElementById('uploadLabel').innerHTML = '<span style="font-size:1.8rem;">📷</span><span>Tap to upload product image</span><span style="font-size:0.72rem;color:#aaa;">JPG, PNG, WEBP — auto compressed</span><input type="file" accept="image/*" onchange="previewNewImage(event)">';
+        await saveToCloud();
+        renderProducts();
+        renderAdminTable();
+        showToast('✅ Product added & saved to cloud!');
+    }
+
+    // ═══════════════════════════════════════════════
+    //  Login / Logout
+    // ═══════════════════════════════════════════════
+    function showLogin() {
+        if (currentPage === 'wax') { waxShowLogin(); return; }
+        document.getElementById('loginOverlay').classList.add('active');
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('errorMsg').style.display = 'none';
+        setTimeout(() => document.getElementById('passwordInput').focus(), 150);
+    }
+    function hideLogin() { document.getElementById('loginOverlay').classList.remove('active'); }
+    function handleKeyPress(e) { if (e.key === 'Enter') checkPassword(); }
+    function checkPassword() {
+        if (document.getElementById('passwordInput').value === ADMIN_PASS) {
+            hideLogin();
+            document.getElementById('adminPanel').classList.add('active');
+            renderAdminTable();
+            syncAdminLogoPreview();
+        } else {
+            document.getElementById('errorMsg').style.display = 'block';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
+        }
+    }
+    function logout() {
+        document.getElementById('adminPanel').classList.remove('active');
+        renderProducts();
+    }
+
+    // ═══════════════════════════════════════════════
+    //  WAX PAGE — full isolated system
+    // ═══════════════════════════════════════════════
+    const WAX_DEFAULT_DATA = {
+        whatsapp : '923325374732',
+        password : '1234',
+        nextId   : 5,
+        products : [
+            { id:1, name:'Honey Wax Strip Kit',   price:850,  icon:'🍯', description:'Gentle honey formula for smooth hair removal. Suitable for all skin types.',   image:null, discount:0,  stock:80,  sold:20 },
+            { id:2, name:'Rose Soft Wax',          price:650,  icon:'🌸', description:'Infused with rose extract. Leaves skin soft and fragrant after waxing.',       image:null, discount:10, stock:60,  sold:25 },
+            { id:3, name:'Cool Azulene Wax',       price:950,  icon:'❄️', description:'Soothing azulene formula reduces redness. Perfect for sensitive skin.',        image:null, discount:0,  stock:50,  sold:15 },
+            { id:4, name:'Natural Green Wax',      price:750,  icon:'🌿', description:'100% natural ingredients. Effective hair removal with a calming herbal scent.',image:null, discount:5,  stock:70,  sold:30 }
+        ]
+    };
+
+    let waxProducts     = [];
+    let WAX_WHATSAPP    = '923325374732';
+    let WAX_ADMIN_PASS  = '1234';
+    let waxNextId       = 5;
+    let waxNewImageData = null;
+    let waxIsSaving     = false;
+
+    async function waxLoadFromCloud() {
+        // Wax data is loaded together with cosmetics in loadFromCloud()
+        // This is a no-op kept for compatibility
+    }
+
+    async function waxSaveToCloud() {
+        // Saves both cosmetics + wax into the same amu_data cloud record
+        await saveToCloud();
+    }
+
+    function waxSetSyncStatus(state) {
+        const dot  = document.getElementById('waxSyncDot');
+        const text = document.getElementById('waxSyncText');
+        if (!dot) return;
+        dot.className = 'sync-dot' + (state==='syncing' ? ' syncing' : state==='error' ? ' error' : '');
+        if (state==='connected') text.textContent = '✅ Connected to Supabase — changes save instantly';
+        if (state==='syncing')   text.textContent = '🔄 Saving to cloud...';
+        if (state==='error')     text.textContent = '❌ Cloud error — check internet or Supabase table';
+    }
+
+    function waxUpdateFloatBtn() {
+        const btn = document.getElementById('waFloatLink');
+        if (currentPage === 'wax') {
+            btn.href = 'https://wa.me/' + WAX_WHATSAPP + '?text=Hi!%20I%20want%20to%20place%20an%20order%20from%20AUM%20Enterprises.';
+        } else {
+            btn.href = 'https://wa.me/' + WHATSAPP_NUM + '?text=Hi!%20I%20want%20to%20place%20an%20order%20from%20AUM%20Enterprises.';
+        }
+    }
+
+    function waxRenderProducts() {
+        const grid = document.getElementById('waxProductsGrid');
+        grid.innerHTML = '';
+        if (!waxProducts.length) {
+            grid.innerHTML = '<p style="text-align:center;color:#888;grid-column:1/-1;padding:30px;font-size:0.9rem;">No wax products yet. Add from admin panel.</p>';
+            return;
+        }
+        const waIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L.057 23.882l6.233-1.638A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.006-1.372l-.36-.214-3.7.972.986-3.607-.234-.37A9.818 9.818 0 1 1 12 21.818z"/></svg>';
+
+        waxProducts.forEach(p => {
+            const imgHTML    = p.image ? '<img src="' + p.image + '" alt="' + p.name + '">' : '<div class="product-emoji-placeholder">' + p.icon + '</div>';
+            const disc       = p.discount || 0;
+            const finalP     = discountedPrice(p.price, disc);
+            const stock      = p.stock || 0;
+            const sold       = p.sold  || 0;
+            const pct        = soldPercent(stock, sold);
+            const remaining  = Math.max(0, stock - sold);
+            const discBadge  = disc > 0 ? '<div class="discount-badge">🏷 ' + disc + '% OFF</div>' : '';
+            const stockBadge = remaining <= 0 ? '<div class="out-of-stock-badge">❌ Out of Stock</div>' : '';
+            const priceHTML  = disc > 0
+                ? '<div class="product-price-original">PKR ' + Number(p.price).toLocaleString() + '</div><div class="product-price">PKR ' + Number(finalP).toLocaleString() + '</div>'
+                : '<div class="product-price">PKR ' + Number(p.price).toLocaleString() + '</div>';
+            const stockBarHTML = stock > 0
+                ? '<div class="stock-bar-wrapper"><div class="stock-bar-label"><span>🛍 ' + pct + '% Sold</span><span>📦 ' + remaining + ' left</span></div><div class="stock-bar-track"><div class="stock-bar-fill ' + stockBarClass(pct) + '" style="width:' + pct + '%"></div></div></div>'
+                : '';
+            const orderBtn = remaining <= 0
+                ? '<div style="text-align:center;color:#aaa;font-size:0.78rem;padding:6px;">❌ Out of Stock</div>'
+                : '<a class="whatsapp-link" href="https://wa.me/' + WAX_WHATSAPP + '?text=Hi!%20I%20want%20to%20order%20*' + encodeURIComponent(p.name) + '*%20(PKR%20' + finalP + ')" target="_blank">' + waIcon + ' Order via WhatsApp</a>';
+
+            grid.innerHTML +=
+                '<div class="product-card" id="waxcard-' + p.id + '">' +
+                discBadge + stockBadge +
+                '<div class="product-image-wrapper" onclick="waxToggleOrder(' + p.id + ')">' + imgHTML + '<span class="click-hint">👆 Tap to order</span></div>' +
+                '<div class="product-info">' +
+                '<div class="product-name">' + p.name + '</div>' +
+                '<div class="product-description">' + (p.description || '') + '</div>' +
+                priceHTML + stockBarHTML +
+                '<div class="order-info" id="waxorder-' + p.id + '"><p>📦 To Order This Product:</p><div class="owner-name">👤 Muddsar</div>' + orderBtn + '</div>' +
+                '</div></div>';
+        });
+    }
+
+    function waxToggleOrder(id) {
+        document.querySelectorAll('#page-wax .order-info').forEach(el => {
+            if (el.id !== 'waxorder-' + id) el.classList.remove('visible');
+        });
+        document.getElementById('waxorder-' + id).classList.toggle('visible');
+    }
+
+    function waxRenderAdminTable() {
+        document.getElementById('waxWaNumberInput').value = WAX_WHATSAPP;
+        const container = document.getElementById('waxAdminCards');
+        container.innerHTML = '';
+        if (!waxProducts.length) {
+            container.innerHTML = '<p style="text-align:center;color:#888;padding:20px;font-size:0.85rem;">No wax products yet.</p>';
+            return;
+        }
+        waxProducts.forEach((p, index) => {
+            const thumbHTML = p.image
+                ? '<img class="pm-thumb" src="' + p.image + '" alt="' + p.name + '">'
+                : '<div class="pm-thumb-emoji">' + p.icon + '</div>';
+            const disc  = p.discount || 0;
+            const stock = p.stock    || 0;
+            const sold  = p.sold     || 0;
+            const pct   = soldPercent(stock, sold);
+
+            container.innerHTML +=
+                '<div class="product-manage-card" id="waxpmcard-' + p.id + '">' +
+                '<div style="font-size:0.7rem;color:#aaa;margin-bottom:6px;">Wax Product #' + (index+1) + '</div>' +
+                '<div class="pm-top">' +
+                '<div id="waxpmthumb-' + p.id + '">' + thumbHTML + '</div>' +
+                '<div class="pm-fields">' +
+                '<div class="form-group pm-field-full"><div class="pm-label">Product Name</div><input class="pm-input" id="waxpmname-' + p.id + '" value="' + p.name.replace(/"/g,'&quot;') + '" placeholder="Product name"></div>' +
+                '<div class="form-group"><div class="pm-label">Price (PKR)</div><input class="pm-input" id="waxpmprice-' + p.id + '" type="number" value="' + p.price + '"></div>' +
+                '<div class="form-group"><div class="pm-label">Discount %</div><input class="pm-input" id="waxpmdisc-' + p.id + '" type="number" value="' + disc + '" min="0" max="90"></div>' +
+                '<div class="form-group"><div class="pm-label">Stock</div><input class="pm-input" id="waxpmstock-' + p.id + '" type="number" value="' + stock + '" min="0"></div>' +
+                '<div class="form-group"><div class="pm-label">Sold</div><input class="pm-input" id="waxpmsold-' + p.id + '" type="number" value="' + sold + '" min="0"></div>' +
+                '</div></div>' +
+                '<div class="form-group" style="margin-bottom:10px;"><div class="pm-label">Description</div><textarea class="pm-textarea" id="waxpmdesc-' + p.id + '" maxlength="150" placeholder="Write 1-2 lines about this product...">' + (p.description || '') + '</textarea></div>' +
+                '<div class="mini-stock-bar"><div class="mini-stock-fill" style="width:' + pct + '%"></div></div>' +
+                '<div style="font-size:0.7rem;color:#888;margin-top:3px;margin-bottom:10px;">' + pct + '% sold · ' + Math.max(0,stock-sold) + ' remaining</div>' +
+                '<div class="pm-actions">' +
+                '<label class="pm-upload">📷 Change Image<input type="file" accept="image/*" onchange="waxChangePmImage(event,' + p.id + ')"></label>' +
+                '<button class="save-btn" onclick="waxSaveProduct(' + p.id + ')">☁️ Save</button>' +
+                '<button class="delete-btn" onclick="waxDeleteProduct(' + p.id + ')">🗑 Delete</button>' +
+                '</div>' +
+                '</div>';
+        });
+    }
+
+    async function waxSaveWhatsApp() {
+        const val = document.getElementById('waxWaNumberInput').value.trim().replace(/\D/g,'');
+        if (!val || val.length < 10) { showToast('Please enter a valid number e.g. 923325374732'); return; }
+        WAX_WHATSAPP = val;
+        waxUpdateFloatBtn();
+        await waxSaveToCloud();
+        showToast('✅ Wax WhatsApp number saved!');
+    }
+
+    async function waxChangePassword() {
+        const cur     = document.getElementById('waxPwdCurrent').value;
+        const nw      = document.getElementById('waxPwdNew').value.trim();
+        const confirm = document.getElementById('waxPwdConfirm').value.trim();
+        if (cur !== WAX_ADMIN_PASS) { showToast('❌ Current password is incorrect!'); return; }
+        if (!nw || nw.length < 4)   { showToast('❌ New password must be at least 4 characters!'); return; }
+        if (nw !== confirm)         { showToast('❌ New passwords do not match!'); return; }
+        WAX_ADMIN_PASS = nw;
+        document.getElementById('waxPwdCurrent').value = '';
+        document.getElementById('waxPwdNew').value     = '';
+        document.getElementById('waxPwdConfirm').value = '';
+        await waxSaveToCloud();
+        showToast('✅ Wax password changed successfully!');
+    }
+
+    async function waxChangePmImage(event, id) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const thumbCell = document.getElementById('waxpmthumb-' + id);
+        thumbCell.innerHTML = '<div class="pm-thumb-emoji" style="font-size:0.85rem;color:#880e4f;">⏳</div>';
+        try {
+            const data    = await compressImage(file);
+            const product = waxProducts.find(p => p.id === id);
+            if (product) {
+                product.image = data;
+                thumbCell.innerHTML = '<img class="pm-thumb" src="' + data + '" alt="' + product.name + '">';
+                showToast('✅ Image ready — tap ☁️ Save to upload');
+            }
+        } catch(err) {
+            thumbCell.innerHTML = '<div class="pm-thumb-emoji">❌</div>';
+            showToast('Could not process image. Try another file.');
+        }
+    }
+
+    async function waxSaveProduct(id) {
+        const product = waxProducts.find(p => p.id === id);
+        if (!product) return;
+        product.name        = document.getElementById('waxpmname-'  + id).value.trim() || product.name;
+        product.price       = parseFloat(document.getElementById('waxpmprice-' + id).value) || product.price;
+        product.discount    = parseFloat(document.getElementById('waxpmdisc-'  + id).value) || 0;
+        product.stock       = parseInt(document.getElementById('waxpmstock-' + id).value)   || 0;
+        product.sold        = parseInt(document.getElementById('waxpmsold-'  + id).value)   || 0;
+        product.description = document.getElementById('waxpmdesc-'  + id).value.trim();
+        if (product.sold > product.stock) product.sold = product.stock;
+        await waxSaveToCloud();
+        waxRenderProducts();
+        waxRenderAdminTable();
+        showToast('✅ Wax product saved to cloud!');
+    }
+
+    async function waxDeleteProduct(id) {
+        if (!confirm('Delete this wax product?')) return;
+        waxProducts = waxProducts.filter(p => p.id !== id);
+        await waxSaveToCloud();
+        waxRenderProducts();
+        waxRenderAdminTable();
+        showToast('🗑 Wax product deleted!');
+    }
+
+    async function waxAddProduct() {
+        const name = document.getElementById('waxNewName').value.trim();
+        const price = parseFloat(document.getElementById('waxNewPrice').value);
+        if (!name || !price) { showToast('Please fill in product name and price!'); return; }
+        const discount = parseFloat(document.getElementById('waxNewDiscount').value) || 0;
+        const desc     = document.getElementById('waxNewDesc').value.trim();
+        const stock    = parseInt(document.getElementById('waxNewStock').value)      || 0;
+        const sold     = parseInt(document.getElementById('waxNewSold').value)       || 0;
+        const icon     = document.getElementById('waxNewIcon').value;
+        waxProducts.push({ id:waxNextId++, name, price, icon, description:desc, image:waxNewImageData||null, discount, stock, sold:Math.min(sold,stock) });
+        ['waxNewName','waxNewPrice','waxNewDiscount','waxNewDesc','waxNewStock','waxNewSold'].forEach(id => document.getElementById(id).value = '');
+        waxNewImageData = null;
+        document.getElementById('waxUploadLabel').innerHTML = '<span style="font-size:1.8rem;">📷</span><span>Tap to upload product image</span><span style="font-size:0.72rem;color:#aaa;">JPG, PNG, WEBP — auto compressed</span><input type="file" accept="image/*" onchange="waxPreviewNewImage(event)">';
+        await waxSaveToCloud();
+        waxRenderProducts();
+        waxRenderAdminTable();
+        showToast('✅ Wax product added & saved to cloud!');
+    }
+
+    async function waxPreviewNewImage(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const label = document.getElementById('waxUploadLabel');
+        label.innerHTML = '<span style="font-size:1.4rem;">⏳</span><span style="font-size:0.82rem;color:#880e4f;">Compressing...</span><input type="file" accept="image/*" onchange="waxPreviewNewImage(event)">';
+        try {
+            waxNewImageData = await compressImage(file);
+            label.innerHTML = '<img src="' + waxNewImageData + '" style="width:70px;height:70px;object-fit:cover;border-radius:10px;border:2px solid #f48fb1;"><span style="font-size:0.78rem;color:#4caf50;">✅ Ready — tap to change</span><input type="file" accept="image/*" onchange="waxPreviewNewImage(event)">';
+        } catch(err) {
+            waxNewImageData = null;
+            label.innerHTML = '<span style="font-size:1.4rem;">❌</span><span style="font-size:0.78rem;color:#f44336;">Error. Try another file.</span><input type="file" accept="image/*" onchange="waxPreviewNewImage(event)">';
+        }
+    }
+
+    function waxShowLogin() {
+        document.getElementById('waxLoginOverlay').classList.add('active');
+        document.getElementById('waxPasswordInput').value = '';
+        document.getElementById('waxErrorMsg').style.display = 'none';
+        setTimeout(() => document.getElementById('waxPasswordInput').focus(), 150);
+    }
+    function waxHideLogin() { document.getElementById('waxLoginOverlay').classList.remove('active'); }
+    function waxHandleKeyPress(e) { if (e.key === 'Enter') waxCheckPassword(); }
+    function waxCheckPassword() {
+        if (document.getElementById('waxPasswordInput').value === WAX_ADMIN_PASS) {
+            waxHideLogin();
+            document.getElementById('waxAdminPanel').classList.add('active');
+            waxRenderAdminTable();
+        } else {
+            document.getElementById('waxErrorMsg').style.display = 'block';
+            document.getElementById('waxPasswordInput').value = '';
+            document.getElementById('waxPasswordInput').focus();
+        }
+    }
+    function waxLogout() {
+        document.getElementById('waxAdminPanel').classList.remove('active');
+        waxRenderProducts();
+    }
+
+    // ── SCROLL-REVEAL for product cards ──
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('revealed');
+                }, i * 80);
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+    function observeAndAnimateCards(gridId) {
+        const grid = document.getElementById(gridId);
+        if (!grid) return;
+        // Fix stock bar widths: set CSS var then reset to 0 so animation plays
+        grid.querySelectorAll('.stock-bar-fill').forEach(bar => {
+            const w = bar.style.width;
+            if (w && w !== '0%') {
+                bar.style.setProperty('--bar-pct', w);
+                bar.style.width = '0%';
+            }
+        });
+        // Observe each card for scroll-reveal
+        grid.querySelectorAll('.product-card').forEach(card => {
+            card.classList.remove('revealed');
+            revealObserver.observe(card);
+        });
+    }
+
+    // Override using var so reassignment works
+    var _origRender    = renderProducts;
+    var _origWaxRender = waxRenderProducts;
+
+    renderProducts = function() {
+        _origRender();
+        setTimeout(() => observeAndAnimateCards('productsGrid'), 30);
+    };
+
+    waxRenderProducts = function() {
+        _origWaxRender();
+        setTimeout(() => observeAndAnimateCards('waxProductsGrid'), 30);
+    };
+
+
+    // ═══════════════════════════════════════════════════════
+    //  PWA INSTALL  — button always visible
+    //  Android Chrome/Edge: native install prompt
+    //  iPhone Safari: step-by-step instructions
+    //  Other browsers: link to open in Chrome
+    // ═══════════════════════════════════════════════════════
+    let deferredPrompt = null;
+
+    // Catch Android/Chrome native install prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+    });
+
+    // Hide install button once successfully installed
+    window.addEventListener('appinstalled', () => {
+        const btn = document.getElementById('installBtn');
+        if (btn) btn.style.display = 'none';
+        closeBanner();
+        showToast('✅ AUM App installed! Find it on your home screen.');
+    });
+
+    function triggerInstall() {
+        if (deferredPrompt) {
+            // ── Android Chrome/Edge: native prompt ──
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((result) => {
+                if (result.outcome === 'accepted') {
+                    showToast('🎉 Installing AUM App...');
+                }
+                deferredPrompt = null;
+            });
+            return;
+        }
+
+        // ── Show instruction banner for all other cases ──
+        const isIOS    = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        const banner   = document.getElementById('installBanner');
+        const msg      = document.getElementById('installBannerMsg');
+        const btn      = document.getElementById('installBannerBtn');
+
+        if (isIOS) {
+            // iPhone/iPad: must use Share > Add to Home Screen
+            msg.innerHTML = '📱 <b>iPhone/iPad steps:</b><br>1. Tap the <b>Share</b> button (□↑) at the bottom of Safari<br>2. Scroll down and tap <b>"Add to Home Screen"</b><br>3. Tap <b>Add</b> — done! Opens like a real app.';
+            btn.textContent = '✓ Got it!';
+            btn.onclick = closeBanner;
+        } else {
+            // Android other browser / Desktop
+            msg.innerHTML = '🌐 <b>To install:</b><br>Open <b>aumenterprises.me</b> in <b>Chrome</b> on your Android phone, then tap the menu (⋮) and select <b>"Add to Home Screen"</b>.';
+            btn.textContent = '✓ Ok';
+            btn.onclick = closeBanner;
+        }
+        banner.classList.add('show');
+    }
+
+    function closeBanner() {
+        document.getElementById('installBanner').classList.remove('show');
+    }
+
+
+    // ═══════════════════════════════════════════════════════
+    //  SERVICE WORKER — registers sw.js for full PWA support
+    //  Network-first: all your GitHub changes show instantly
+    // ═══════════════════════════════════════════════════════
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('AUM SW registered:', reg.scope))
+                .catch(err => console.log('SW error:', err));
+        });
+    }
+
+    // START
+    loadFromCloud();
+</script>
+</body>
+</html>
