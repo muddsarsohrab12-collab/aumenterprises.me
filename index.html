@@ -1334,7 +1334,7 @@
     //  Cloud: READ
     // ═══════════════════════════════════════════════
     async function loadFromCloud() {
-        setLoading(30, 'Connecting to Supabase cloud...');
+        setLoading(30, 'Connecting ...');
         try {
             const res  = await fetch(SB_URL + '?key=eq.amu_data&select=value', { headers: SB_HEAD });
             if (!res.ok) throw new Error('Fetch failed ' + res.status);
