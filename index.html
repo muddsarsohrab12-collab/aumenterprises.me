@@ -930,7 +930,7 @@
         </div>
     </div>
     <div class="loading-text">AUM ENTERPRISES</div>
-    <div class="loading-sub" id="loadingMsg">Loading products from cloud...</div>
+    <div class="loading-sub" id="loadingMsg">Loading products ...</div>
     <div class="loading-bar-track"><div class="loading-bar-fill" id="loadingBar"></div></div>
 </div>
 
@@ -1060,7 +1060,7 @@
         <!-- Sync status -->
         <div class="sync-bar">
             <div class="sync-dot" id="syncDot"></div>
-            <span class="sync-text" id="syncText">✅ Connected to Supabase cloud</span>
+            <span class="sync-text" id="syncText">✅ Connected</span>
         </div>
 
         <!-- Brand Logo -->
@@ -1186,7 +1186,7 @@
         <!-- Sync status -->
         <div class="sync-bar">
             <div class="sync-dot" id="waxSyncDot"></div>
-            <span class="sync-text" id="waxSyncText">✅ Connected to Supabase cloud</span>
+            <span class="sync-text" id="waxSyncText">✅ Connected </span>
         </div>
 
         <!-- WhatsApp Number -->
@@ -1263,7 +1263,7 @@
                     <input type="file" accept="image/*" onchange="waxPreviewNewImage(event)">
                 </label>
             </div>
-            <button class="add-btn" onclick="waxAddProduct()">☁️ Add & Save to Cloud</button>
+            <button class="add-btn" onclick="waxAddProduct()">☁️ Add & Save </button>
         </div>
 
         <!-- Manage Products -->
@@ -1380,7 +1380,7 @@
             setLoading(100, 'Loaded offline');
             setSyncStatus('error');
             waxSetSyncStatus('error');
-            showToast('Could not reach cloud. Showing default products.');
+            showToast('Could not reach. Showing default products.');
         } finally {
             setTimeout(() => {
                 document.getElementById('loadingScreen').style.display = 'none';
@@ -1416,7 +1416,7 @@
             console.error(err);
             setSyncStatus('error');
             waxSetSyncStatus('error');
-            showToast('Cloud save failed. Check internet connection.');
+            showToast('Save failed. Check internet connection.');
         } finally {
             isSaving = false;
         }
@@ -1434,9 +1434,9 @@
         const text = document.getElementById('syncText');
         if (!dot) return;
         dot.className = 'sync-dot' + (state==='syncing' ? ' syncing' : state==='error' ? ' error' : '');
-        if (state==='connected') text.textContent = '✅ Connected to Supabase — changes save instantly';
-        if (state==='syncing')   text.textContent = '🔄 Saving to cloud...';
-        if (state==='error')     text.textContent = '❌ Cloud error — check internet or Supabase table';
+        if (state==='connected') text.textContent = '✅ Connected  — changes save instantly';
+        if (state==='syncing')   text.textContent = '🔄 Saving ...';
+        if (state==='error')     text.textContent = '❌ Error — check internet or Supabase table';
     }
     function showToast(msg) {
         const t = document.getElementById('toast');
@@ -1552,7 +1552,7 @@
 
     async function saveLogo() {
         await saveToCloud();
-        showToast('✅ Logo saved to cloud!');
+        showToast('✅ Logo saved !');
     }
 
     async function removeLogo() {
@@ -1774,7 +1774,7 @@
         await saveToCloud();
         renderProducts();
         renderAdminTable();
-        showToast('✅ Product added & saved to cloud!');
+        showToast('✅ Product added & saved !');
     }
 
     // ═══════════════════════════════════════════════
@@ -1843,9 +1843,9 @@
         const text = document.getElementById('waxSyncText');
         if (!dot) return;
         dot.className = 'sync-dot' + (state==='syncing' ? ' syncing' : state==='error' ? ' error' : '');
-        if (state==='connected') text.textContent = '✅ Connected to Supabase — changes save instantly';
-        if (state==='syncing')   text.textContent = '🔄 Saving to cloud...';
-        if (state==='error')     text.textContent = '❌ Cloud error — check internet or Supabase table';
+        if (state==='connected') text.textContent = '✅ Connected — changes save instantly';
+        if (state==='syncing')   text.textContent = '🔄 Saving ...';
+        if (state==='error')     text.textContent = '❌ Error — check internet or Supabase table';
     }
 
     function waxUpdateFloatBtn() {
@@ -2003,7 +2003,7 @@
         await waxSaveToCloud();
         waxRenderProducts();
         waxRenderAdminTable();
-        showToast('✅ Wax product saved to cloud!');
+        showToast('✅ Wax product saved !');
     }
 
     async function waxDeleteProduct(id) {
@@ -2031,7 +2031,7 @@
         await waxSaveToCloud();
         waxRenderProducts();
         waxRenderAdminTable();
-        showToast('✅ Wax product added & saved to cloud!');
+        showToast('✅ Wax product added & saved !');
     }
 
     async function waxPreviewNewImage(event) {
